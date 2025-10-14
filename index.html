@@ -32,7 +32,9 @@
     /* ============ Header ============ */
     header{position:sticky; top:0; z-index:50; background:#fff; box-shadow:0 2px 12px rgba(0,0,0,.04)}
     .nav{display:flex; align-items:center; justify-content:space-between; padding:12px 10%}
+    .brand{display:flex; align-items:center; gap:10px}
     .brand img{height:34px}
+    .brand-name{font-weight:800}
     .menu a{display:inline-block; margin:0 14px; text-decoration:none; font-weight:600; color:var(--text)}
     .menu a:hover{color:var(--amber)}
     .btn{background:linear-gradient(135deg, #875532, var(--amber)); border:none; color:#fff; font-weight:700; padding:10px 18px; border-radius:999px; cursor:pointer; transform:scale(.95)}
@@ -102,15 +104,19 @@
   <!-- Header -->
   <header>
     <div class="nav container">
-      <a class="brand" href="#home"><img src="header-logo-co-nen.png" alt="BAVATU" /></a>
+      <a class="brand" href="#home">
+        <img src="header-logo-co-nen.png" alt="BAVATU" />
+        <span class="brand-name">BAVATU — Home Spa</span>
+      </a>
       <nav class="menu">
         <a href="#home">Home</a>
         <a href="#story">Why BAVATU</a>
         <a href="#sessions">Sessions</a>
-        <a href="#booking">Booking</a>
+        <a href="#book">Booking</a>
         <a href="#contact">Contact</a>
       </nav>
-      <button class="btn" onclick="document.querySelector('#booking').scrollIntoView({behavior:'smooth'})">Book Now</button>
+      <!-- Book Now mở tab mới tới Google Calendar -->
+      <a class="btn" href="https://calendar.app.google/FYqg5ckYUwUuPvie6" target="_blank" rel="noopener">Book Now</a>
     </div>
   </header>
 
@@ -187,42 +193,36 @@
     </div>
   </section>
 
-  <!-- ========== BOOK / REQUEST ========== -->
-<section id="book" class="container">
-  <h3 class="eyebrow">BOOK</h3>
-  <h2>Request Your Session</h2>
-  <p class="hint">Mẹo: Bấm vào từng “Bước” để mở trang tương ứng (Calendar / Zalo / Form).</p>
+  <!-- Booking -->
+  <section id="book">
+    <div class="container booking">
+      <div class="eyebrow">BOOK</div>
+      <h2>Request Your Session</h2>
 
-  <div class="steps">
-    <!-- Bước 1 -->
-    <a class="step" href="https://calendar.app.google/FYqg5ckYUwUuPvie6" target="_blank" rel="noopener">
-      <b class="badge">Bước 1</b>
-      <h3>Kiểm tra &amp; Booking online</h3>
-      <p>Google Calendar</p>
-    </a>
+      <p class="hint">Mẹo: Bấm vào từng “Bước” để mở trang tương ứng (Calendar / Zalo / Form).</p>
 
-    <!-- Bước 2 -->
-    <a class="step" href="https://forms.gle/uyn1hR2udYfAMbFt9" target="_blank" rel="noopener">
-      <b class="badge">Bước 2</b>
-      <h3>Hành trình cá nhân hóa</h3>
-      <p>Hoàn thành form trải nghiệm</p>
-    </a>
+      <div class="steps">
+        <a class="step" href="https://calendar.app.google/FYqg5ckYUwUuPvie6" target="_blank" rel="noopener">
+          <b>Bước 1</b>
+          <h3>Kiểm tra &amp; Booking online</h3>
+          <p>Google Calendar</p>
+        </a>
 
-    <!-- Bước 3 -->
-    <a class="step" href="https://zalo.me/0937477951" target="_blank" rel="noopener">
-      <b class="badge">Bước 3</b>
-      <h3>Contact xác nhận booking</h3>
-      <p>Xác nhận &amp; chọn giờ</p>
-    </a>
-  </div>
+        <a class="step" href="https://forms.gle/uyn1hR2udYfAMbFt9" target="_blank" rel="noopener">
+          <b>Bước 2</b>
+          <h3>Hành trình cá nhân hóa</h3>
+          <p>Nhập form trải nghiệm</p>
+        </a>
 
-  <p class="booking-hint">Sau khi hoàn thành 3 bước, BAVATU sẽ xác nhận qua Zalo trong vòng 1 giờ.</p>
-</section>
-<!-- ========== /BOOK ========== -->
-        
+        <a class="step" href="https://zalo.me/0937477951" target="_blank" rel="noopener">
+          <b>Bước 3</b>
+          <h3>Contact xác nhận booking</h3>
+          <p>Xác nhận booking</p>
         </a>
       </div>
 
+      <p class="hint">Sau khi hoàn thành 3 bước, BAVATU sẽ xác nhận qua Zalo trong vòng 1 giờ.</p>
+    </div>
   </section>
 
   <!-- Contact -->
@@ -235,12 +235,7 @@
           <p>
             <b>Phone:</b> <a href="https://zalo.me/0937477951" target="_blank" rel="noopener">0937477951</a><br>
             <b>Email:</b> <a href="mailto:bavatubooking@gmail.com">bavatubooking@gmail.com</a><br>
-            <b>Address:</b> 
-<a href="https://www.google.com/maps?q=17+Đường+số+11,+KDC+Him+Lam,+P.+Tân+Hưng,+Quận+7,+TPHCM" 
-   target="_blank" 
-   rel="noopener">
-   17 Đường số 11, KDC Him Lam, P. Tân Hưng (by appointment)
-</a>.
+            <b>Address:</b> Private Home Spa — 17 Đường số 11, KDC Him Lam, P. Tân Hưng (by appointment).
           </p>
         </div>
         <div class="contact-brand">
