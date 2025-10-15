@@ -5,35 +5,40 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>BAVATU — Home Spa | Hơn cả sự thư giãn</title>
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/webp" href="favicon.webp"/>
+  <!-- Favicon (ưu tiên Favicon.webp; nếu file của anh là favicon.webp, đổi tên cho khớp hoặc sửa đường dẫn này) -->
+  <link rel="icon" type="image/webp" href="Favicon.webp"/>
 
-  <!-- Meta & Open Graph -->
-  <meta name="description" content="BAVATU — Home Spa: Hơn cả sự thư giãn, một hành trình lắng lại dành riêng cho bạn." />
-  <meta property="og:title" content="BAVATU — Home Spa | Hơn cả sự thư giãn" />
-  <meta property="og:description" content="Không gian riêng tư, ấm áp. Trải nghiệm tinh tế cho thân và tâm." />
-  <meta property="og:image" content="footer-hinh-nen.webp" />
-  <meta property="og:type" content="website" />
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="Favicon.webp">
+  <meta name="theme-color" content="#1e160f">
 
-  <link rel="preload" as="image" href="footer-hinh-nen.webp" />
+  <!-- Canonical + SEO basics -->
+  <link rel="canonical" href="https://bavatu-spa.github.io/bavatu/">
+  <meta name="description" content="BAVATU – Home Spa tại KDC Him Lam. Hành trình thư giãn riêng tư, tinh tế. Đặt lịch online, cá nhân hoá trải nghiệm, xác nhận nhanh qua Zalo.">
+  <meta name="keywords" content="BAVATU, Home Spa, spa riêng tư, massage, thư giãn, Him Lam, Tân Hưng, Quận 7">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bavatu-spa.github.io/bavatu/">
+  <meta property="og:title" content="BAVATU – Home Spa | Hơn cả sự thư giãn">
+  <meta property="og:description" content="Không gian riêng tư, ấm áp. Đặt lịch online – cá nhân hoá trải nghiệm – xác nhận nhanh qua Zalo.">
+  <meta property="og:image" content="https://bavatu-spa.github.io/bavatu/hero-hinh-nen.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="BAVATU – Home Spa | Hơn cả sự thư giãn">
+  <meta name="twitter:description" content="Không gian riêng tư, ấm áp. Đặt lịch online – cá nhân hoá trải nghiệm – xác nhận nhanh qua Zalo.">
+  <meta name="twitter:image" content="https://bavatu-spa.github.io/bavatu/hero-hinh-nen.webp">
+
+  <!-- Preload ảnh HERO để hiển thị nhanh -->
+  <link rel="preload" as="image" href="hero-hinh-nen.webp" fetchpriority="high">
 
   <style>
     :root{
-      --bg:#efe5da;
-      --paper:#fff9f2;
-      --ink:#2b221a;
-      --muted:#6a5b4f;
-      --accent:#a57853;
-      --choco:#4a3b2e;
-      --shadow:0 16px 50px rgba(44,34,26,.18);
-      --radius:18px;
-      --glass:rgba(255,255,255,.55);
-      --glass-stroke:rgba(255,255,255,.35);
-      --glass-shadow:0 10px 40px rgba(0,0,0,.18);
-      --max: 1160px;
+      --bg:#efe5da; --paper:#fff9f2; --ink:#2b221a; --muted:#6a5b4f; --accent:#a57853; --choco:#4a3b2e;
+      --shadow:0 16px 50px rgba(44,34,26,.18); --radius:18px;
+      --glass:rgba(255,255,255,.55); --glass-stroke:rgba(255,255,255,.35); --glass-shadow:0 10px 40px rgba(0,0,0,.18);
+      --max:1160px;
     }
-
-    /* Reset nhỏ */
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;background:var(--bg);color:var(--choco);font:16px/1.55 system-ui,-apple-system,Segoe UI,Inter,Roboto,Helvetica,Arial}
     img{max-width:100%;display:block}
@@ -41,117 +46,68 @@
     .container{max-width:var(--max);margin-inline:auto;padding-inline:22px}
 
     /* Header */
-    header{
-      position:sticky;top:0;z-index:50;
-      backdrop-filter:saturate(120%) blur(10px);
-      background:linear-gradient(180deg,rgba(30,22,16,.55),rgba(30,22,16,.35) 60%,rgba(30,22,16,0));
-      color:#f3ece6;
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
-    .nav{
-      height:64px;display:flex;align-items:center;justify-content:space-between;gap:20px
-    }
+    header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(120%) blur(10px);
+      background:linear-gradient(180deg,rgba(30,22,16,.55),rgba(30,22,16,.35) 60%,rgba(30,22,16,0)); color:#f3ece6;
+      border-bottom:1px solid rgba(255,255,255,.08)}
+    .nav{height:64px;display:flex;align-items:center;justify-content:space-between;gap:20px}
     .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.04em}
     .nav a{color:#fff;opacity:.9}
     .nav a:hover{opacity:1}
-    .nav .cta{
-      background:#cf956e;color:#fff;font-weight:700;padding:10px 16px;border-radius:999px;box-shadow:0 6px 18px rgba(207,149,110,.35)
-    }
+    .nav .cta{background:#cf956e;color:#fff;font-weight:700;padding:10px 16px;border-radius:999px;box-shadow:0 6px 18px rgba(207,149,110,.35)}
 
-    /* Hero dùng hero-hinh-nen.webp */
+    /* Hero (dùng hero-hinh-nen.webp) */
     .hero{
       position:relative;min-height:90vh;display:grid;place-items:center;text-align:center;color:#fff;isolation:isolate;
       background:url("hero-hinh-nen.webp") center/cover no-repeat fixed;
     }
     .hero::before{
-      content:"";
-      position:absolute;inset:0;z-index:-1;
-      /* overlay ấm + nâng sáng nhẹ */
+      content:"";position:absolute;inset:0;z-index:-1;
       background:
-        radial-gradient(1200px 500px at 50% 80%, rgba(255,220,180,.08), transparent 60%),
-        linear-gradient(180deg, rgba(18,12,8,.46), rgba(18,12,8,.58));
-      mix-blend:screen;
+        radial-gradient(1200px 500px at 50% 80%, rgba(255,220,180,.10), transparent 60%),
+        linear-gradient(180deg, rgba(18,12,8,.42), rgba(18,12,8,.56));
     }
-    .hero h1{
-      margin:0 0 18px 0;
-      font-weight:800;letter-spacing:.02em;
-      text-shadow:0 8px 32px rgba(0,0,0,.45);
-      font-size:clamp(32px,5.2vw,64px); /* giảm 4pt */
-    }
-    .hero p.lead{
-      margin:0 0 30px 0;
-      font-size:clamp(18px,2.2vw,24px); /* +4pt */
-      opacity:.95;text-shadow:0 6px 20px rgba(0,0,0,.4)
-    }
+    .hero h1{margin:0 0 18px 0;font-weight:800;letter-spacing:.02em;text-shadow:0 8px 32px rgba(0,0,0,.45);
+      font-size:clamp(32px,5.2vw,64px)}
+    .hero p.lead{margin:0 0 30px 0;font-size:clamp(18px,2.2vw,24px);opacity:.95;text-shadow:0 6px 20px rgba(0,0,0,.4)}
 
     /* Sections */
     section{padding:64px 0}
-    h2.section-title{
-      font-size:clamp(22px,2.4vw,28px);
-      letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
-      margin:0 0 24px 0
-    }
+    h2.section-title{font-size:clamp(22px,2.4vw,28px);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 24px}
 
-    /* Our Story + Slide (hai cột cân nhau) */
+    /* Our Story + Slide */
     .story-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:stretch}
-    .story-card{
-      background:var(--paper);padding:26px;border-radius:var(--radius);
-      box-shadow:var(--shadow);overflow:auto;max-height:520px /* cố định chiều cao khớp slide */
-    }
+    .story-card{background:var(--paper);padding:26px;border-radius:var(--radius);box-shadow:var(--shadow);overflow:auto;max-height:520px}
     .story-card h3{margin:0 0 16px 0;font-size:28px;color:var(--ink)}
     .story-card p{margin:10px 0}
-    .slide{
-      position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);height:520px
-    }
+    .slide{position:relative;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);height:520px}
     .slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .6s ease}
-    .slide .nav-btn{
-      position:absolute;top:50%;translate:0 -50%;
-      width:40px;height:40px;border-radius:999px;background:rgba(0,0,0,.35);color:#fff;
-      display:grid;place-items:center;cursor:pointer;border:1px solid rgba(255,255,255,.35)
-    }
+    .slide .nav-btn{position:absolute;top:50%;translate:0 -50%;width:40px;height:40px;border-radius:999px;background:rgba(0,0,0,.35);color:#fff;display:grid;place-items:center;cursor:pointer;border:1px solid rgba(255,255,255,.35)}
     .slide .prev{left:12px}.slide .next{right:12px}
     .slide .nav-btn:hover{background:rgba(0,0,0,.55)}
 
-    /* Menu (dịch vụ) */
-    .menu-grid{
-      display:grid;grid-template-columns:repeat(2,1fr);gap:22px
-    }
-    .card{
-      background:var(--paper);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)
-    }
+    /* Menu */
+    .menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+    .card{background:var(--paper);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
     .card img{aspect-ratio:16/9;object-fit:cover}
     .card-body{padding:18px}
     .card h4{margin:0 0 8px 0;font-size:20px}
     .price{font-weight:800;margin-top:10px}
 
-    /* Booking (Steps) */
+    /* Booking */
     .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-    .step{
-      background:var(--paper);border-radius:16px;padding:22px;box-shadow:var(--shadow)
-    }
-    .badge{
-      display:inline-block;padding:10px 16px;border-radius:999px;background:#efe0d2;color:#6d4a2e;font-weight:800;margin-bottom:10px
-    }
+    .step{background:var(--paper);border-radius:16px;padding:22px;box-shadow:var(--shadow)}
+    .badge{display:inline-block;padding:10px 16px;border-radius:999px;background:#efe0d2;color:#6d4a2e;font-weight:800;margin-bottom:10px}
     .step h3{margin:0 0 8px 0;font-size:22px}
-    /* links trong Steps: KO gạch chân, chỉ hover */
     .step a{color:var(--choco);text-decoration:none;border-bottom:1px solid transparent}
     .step a:hover{border-bottom-color:currentColor}
-
     .hint{margin-top:14px;color:var(--muted);font-size:14px}
 
     /* Testimonials */
-    .quote{
-      background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,.55));
-      border-radius:18px;padding:18px 22px;box-shadow:var(--shadow);
-      backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.35)
-    }
+    .quote{background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(255,255,255,.55));border-radius:18px;padding:18px 22px;box-shadow:var(--shadow);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.35)}
 
-    /* Contact (liquid glass) + FAQ */
+    /* Contact + FAQ (glass) */
     .contact-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:22px}
-    .glass{
-      background:var(--glass);border:1px solid var(--glass-stroke);backdrop-filter:blur(8px);
-      border-radius:18px;box-shadow:var(--glass-shadow);padding:22px
-    }
+    .glass{background:var(--glass);border:1px solid var(--glass-stroke);backdrop-filter:blur(8px);border-radius:18px;box-shadow:var(--glass-shadow);padding:22px}
     .faq-item{border-bottom:1px dashed rgba(0,0,0,.15)}
     .faq-q{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0;cursor:pointer;font-weight:700}
     .faq-q .chev{transition:transform .25s ease}
@@ -160,55 +116,150 @@
     .faq-item.open .faq-a{grid-template-rows:1fr}
     .faq-item.open .chev{transform:rotate(180deg)}
 
-    /* Footer = 1 tầng, nền là ảnh */
-    footer{
-      position:relative;color:#fff;text-align:center;isolation:isolate;
-      background:url("footer-hinh-nen.webp") center/cover no-repeat;
-    }
-    .footer-overlay{
-      background:linear-gradient(180deg,rgba(18,12,8,.65),rgba(18,12,8,.72));
-      position:absolute;inset:0;z-index:0
-    }
-    .footer-inner{
-      position:relative;z-index:1;min-height:64vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-      padding:64px 22px;gap:18px
-    }
-    .footer-inner h3{
-      margin:0;color:#fff;font-weight:800;font-size:clamp(28px,4.2vw,52px);text-shadow:0 10px 30px rgba(0,0,0,.45)
-    }
+    /* Footer (1 tầng, nền ảnh footer-hinh-nen.webp) */
+    footer{position:relative;color:#fff;text-align:center;isolation:isolate;background:url("footer-hinh-nen.webp") center/cover no-repeat}
+    .footer-overlay{background:linear-gradient(180deg,rgba(18,12,8,.65),rgba(18,12,8,.72));position:absolute;inset:0;z-index:0}
+    .footer-inner{position:relative;z-index:1;min-height:64vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:64px 22px;gap:18px}
+    .footer-inner h3{margin:0;color:#fff;font-weight:800;font-size:clamp(28px,4.2vw,52px);text-shadow:0 10px 30px rgba(0,0,0,.45)}
     .footer-inner p{margin:0 0 14px 0;font-size:clamp(16px,2vw,22px);opacity:.95}
     .footer-logo{width:84px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.45))}
     .copyright{font-size:13px;opacity:.8;margin-top:6px}
 
-    /* Links đặc biệt */
-    .link-underline{text-decoration:underline;text-underline-offset:3px}
-
-    /* Responsive nhỏ */
+    /* Responsive */
     @media (max-width: 960px){
       .story-grid,.contact-grid,.steps,.menu-grid{grid-template-columns:1fr}
       .hero{min-height:78vh}
       .story-card{max-height:unset}
       .slide{height:360px}
     }
+/* Mobile header fix */
+@media (max-width: 768px){
+  .nav nav {
+    display: none;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    background: rgba(30,22,16,0.95);
+    backdrop-filter: blur(10px);
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(255,255,255,.15);
+  }
+  .nav.open nav { display: flex; }
+  .menu-toggle {
+    display: block;
+    font-size: 26px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #fff;
+  }
+  .nav .cta {
+    margin-top: 10px;
+    font-size: 15px;
+    padding: 10px 24px;
+  }
+  .brand { flex: 1; }
+}
+
+/* Ẩn hamburger trên desktop */
+.menu-toggle { display: none; }
+
+/* Hero background fix cho mobile */
+.hero {
+  background-attachment: scroll;
+  background-position: center center;
+  background-size: cover;
+}
+/* --- Refine Menu Cards for Balanced Look --- */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  justify-content: center;
+  align-items: start;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--paper);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 35px rgba(0,0,0,0.12);
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+}
+
+.card-body {
+  padding: 16px 18px;
+  text-align: left;
+}
+
+.card h4 {
+  font-size: 18px;
+  margin: 0 0 6px 0;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.card p {
+  font-size: 15px;
+  color: var(--muted);
+  margin: 0 0 10px 0;
+  line-height: 1.45;
+}
+
+.price {
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--choco);
+}
+
+/* Mobile fit */
+@media (max-width: 768px) {
+  .menu-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .card img {
+    aspect-ratio: 16/10;
+  }
+}
   </style>
 </head>
 <body>
 
   <!-- Header -->
   <header>
-    <div class="container nav">
-      <div class="brand"><img src="favicon.webp" alt="BAVATU" style="height:22px"> BAVATU</div>
-      <nav style="display:flex;gap:22px;align-items:center">
-        <a href="#why">Why BAVATU</a>
-        <a href="#menu">Menu</a>
-        <a href="#book">Booking</a>
-        <a href="#contact">Contact</a>
-        <a class="cta" href="https://calendar.app.google/5YScKPWWB1q9cDC69" target="_blank" rel="noopener">Book Now</a>
-      </nav>
-    </div>
-  </header>
+  <div class="container nav">
+    <div class="brand"><img src="favicon.webp" alt="BAVATU" style="height:22px"> BAVATU</div>
+    <button class="menu-toggle" aria-label="Menu">☰</button>
+    <nav>
+      <a href="#why">Why BAVATU</a>
+      <a href="#menu">Menu</a>
+      <a href="#book">Booking</a>
+      <a href="#contact">Contact</a>
+      <a class="cta" href="https://calendar.app.google/5YScKPWWB1q9cDC69" target="_blank" rel="noopener">Book Now</a>
+    </nav>
+  </div>
+</header>
 
-  <!-- Hero dùng footer-hinh-nen.webp -->
+  <!-- HERO -->
   <section class="hero">
     <div class="container">
       <h1>BAVATU — Home Spa</h1>
@@ -216,7 +267,7 @@
     </div>
   </section>
 
-  <!-- Our Story + Slide -->
+  <!-- OUR STORY + SLIDE -->
   <section id="why" class="container">
     <h2 class="section-title">Our Story & Philosophy</h2>
 
@@ -237,14 +288,14 @@
       </article>
 
       <aside class="slide" aria-label="Story slideshow">
-        <!-- Slideshow images: auto nhận story-1..story-7 nếu có -->
+        <!-- Slide ảnh: lazy-load (ngoại trừ ảnh đầu) -->
         <img src="story-1.webp" alt="BAVATU story 1" style="opacity:1">
-        <img src="story-2.webp" alt="BAVATU story 2" style="opacity:0">
-        <img src="story-3.webp" alt="BAVATU story 3" style="opacity:0">
-        <img src="story-4.webp" alt="BAVATU story 4" style="opacity:0">
-        <img src="story-5.webp" alt="BAVATU story 5" style="opacity:0">
-        <img src="story-6.webp" alt="BAVATU story 6" style="opacity:0">
-        <img src="story-7.webp" alt="BAVATU story 7" style="opacity:0">
+        <img src="story-2.webp" alt="BAVATU story 2" style="opacity:0" loading="lazy" decoding="async">
+        <img src="story-3.webp" alt="BAVATU story 3" style="opacity:0" loading="lazy" decoding="async">
+        <img src="story-4.webp" alt="BAVATU story 4" style="opacity:0" loading="lazy" decoding="async">
+        <img src="story-5.webp" alt="BAVATU story 5" style="opacity:0" loading="lazy" decoding="async">
+        <img src="story-6.webp" alt="BAVATU story 6" style="opacity:0" loading="lazy" decoding="async">
+        <img src="story-7.webp" alt="BAVATU story 7" style="opacity:0" loading="lazy" decoding="async">
 
         <button class="nav-btn prev" type="button" aria-label="Ảnh trước">‹</button>
         <button class="nav-btn next" type="button" aria-label="Ảnh sau">›</button>
@@ -252,14 +303,13 @@
     </div>
   </section>
 
-  <!-- Menu (2 hàng / 2 cột, ảnh full box) -->
+  <!-- MENU -->
   <section id="menu" class="container">
     <h2 class="section-title">Signature Menu & Transparent Pricing</h2>
 
     <div class="menu-grid">
-      <!-- Item 1 -->
       <article class="card">
-        <img src="menu-khoang-thu-thai.png" alt="Khoảng Thư Thái — 90 phút">
+        <img src="menu-khoang-thu-thai.png" alt="Khoảng Thư Thái — 90 phút" loading="lazy" decoding="async" width="960" height="540">
         <div class="card-body">
           <h4>Khoảng Thư Thái — 90 phút</h4>
           <p>Ngâm chân thảo mộc · BAVATU Flow (Body + Mind) · Đắp mặt nạ · Tắm ấm</p>
@@ -267,9 +317,8 @@
         </div>
       </article>
 
-      <!-- Item 2 -->
       <article class="card">
-        <img src="menu-an-duong-than.png" alt="An Dưỡng Thân — 140 phút">
+        <img src="menu-an-duong-than.png" alt="An Dưỡng Thân — 140 phút" loading="lazy" decoding="async" width="960" height="540">
         <div class="card-body">
           <h4>An Dưỡng Thân — 140 phút</h4>
           <p>Ngâm chân thảo mộc · BAVATU Flow (Body + Mind) · Đắp mặt nạ · Tắm ấm</p>
@@ -277,9 +326,8 @@
         </div>
       </article>
 
-      <!-- Item 3 -->
       <article class="card">
-        <img src="menu-tinh-than-lac.png" alt="Tịnh Thân Lạc — 150 phút">
+        <img src="menu-tinh-than-lac.png" alt="Tịnh Thân Lạc — 150 phút" loading="lazy" decoding="async" width="960" height="540">
         <div class="card-body">
           <h4>Tịnh Thân Lạc — 150 phút</h4>
           <p>Ngâm bồn thảo mộc · BAVATU Flow (Body + Mind) · Đắp mặt nạ · Tắm ấm</p>
@@ -287,19 +335,18 @@
         </div>
       </article>
 
-      <!-- Item 4 -->
       <article class="card">
-        <img src="menu-tai-nguyen-sinh.png" alt="Tái Nguyên Sinh — 150 phút">
+        <img src="menu-tai-nguyen-sinh.png" alt="Tái Nguyên Sinh — 150 phút" loading="lazy" decoding="async" width="960" height="540">
         <div class="card-body">
           <h4>Tái Nguyên Sinh — 150 phút</h4>
-          <p>Ngâm chân thảo mộc · BAVATU Flow (Body + Mind) · Đắp mặt nạ · Tẩy trượt thân.</p>
+          <p>Ngâm chân thảo mộc · BAVATU Flow (Body + Mind) · Đắp mặt nạ · Tẩy trượt thân · Tắm ấm</p>
           <div class="price">1.400K</div>
         </div>
       </article>
     </div>
   </section>
 
-  <!-- Booking -->
+  <!-- BOOKING -->
   <section id="book" class="container">
     <h2 class="section-title">Book</h2>
 
@@ -309,67 +356,66 @@
     <div class="steps" style="margin-top:18px">
       <div class="step">
         <div class="badge">Bước 1</div>
-        <h3><a href="https://calendar.app.google/5YScKPWWB1q9cDC69" target="_blank" rel="noopener">Đặt lịch</a></h3>
-        <div><a href="https://calendar.app.google/5YScKPWWB1q9cDC69" target="_blank" rel="noopener">Kiểm tra &amp; booking online</a></div>
+        <h3><a href="https://calendar.app.google/5YScKPWWB1q9cDC69?utm_source=site&utm_medium=cta&utm_campaign=booking" target="_blank" rel="noopener">Đặt lịch</a></h3>
+        <div><a href="https://calendar.app.google/5YScKPWWB1q9cDC69?utm_source=site&utm_medium=cta&utm_campaign=booking" target="_blank" rel="noopener">Kiểm tra &amp; booking online</a></div>
       </div>
 
       <div class="step">
         <div class="badge">Bước 2</div>
-        <h3><a href="https://forms.gle/uyn1hR2udYfAMbFt9" target="_blank" rel="noopener">Hành trình cá nhân hoá</a></h3>
-        <div><a href="https://forms.gle/uyn1hR2udYfAMbFt9" target="_blank" rel="noopener">Nhập Form trải nghiệm</a></div>
+        <h3><a href="https://forms.gle/uyn1hR2udYfAMbFt9?utm_source=site&utm_medium=cta&utm_campaign=booking" target="_blank" rel="noopener">Hành trình cá nhân hoá</a></h3>
+        <div><a href="https://forms.gle/uyn1hR2udYfAMbFt9?utm_source=site&utm_medium=cta&utm_campaign=booking" target="_blank" rel="noopener">Nhập Form trải nghiệm</a></div>
       </div>
 
       <div class="step">
         <div class="badge">Bước 3</div>
-        <h3><a href="https://zalo.me/0937477951" target="_blank" rel="noopener">Contact BAVATU</a></h3>
-        <div><a href="https://zalo.me/0937477951" target="_blank" rel="noopener">Confirm booking</a></div>
+        <h3><a href="https://zalo.me/0937477951?utm_source=site&utm_medium=cta&utm_campaign=booking" target="_blank" rel="noopener">Contact BAVATU</a></h3>
+        <div><a href="https://zalo.me/0937477951?utm_source=site&utm_medium=cta&utm_campaign=booking" target="_blank" rel="noopener">Confirm booking</a></div>
       </div>
     </div>
 
+    <div class="hint">Sau khi hoàn thành 3 bước, BAVATU sẽ xác nhận qua Zalo trong vòng 1 giờ.</div>
   </section>
 
-  <!-- Testimonials -->
+  <!-- TESTIMONIALS -->
   <section class="container">
     <h2 class="section-title">What Clients Say</h2>
     <div class="quote">“BAVATU rất tinh tế trong từng chuyển động. Đây là nơi mình muốn quay lại đều đặn.” — <strong>Hạnh T.</strong></div>
   </section>
 
-  <!-- Contact + FAQ -->
+  <!-- CONTACT + FAQ -->
   <section id="contact" class="container">
     <h2 class="section-title">Contact</h2>
     <div class="contact-grid">
       <div class="glass">
         <h3 style="margin:0 0 12px 0">We’re here for you</h3>
-        <p style="margin:6px 0"><strong>Phone:</strong> <a href="tel:0937477951" class="">0937477951</a></p>
+        <p style="margin:6px 0"><strong>Phone:</strong> <a href="tel:0937477951">0937477951</a></p>
         <p style="margin:6px 0"><strong>Email:</strong> <a href="mailto:bavatubooking@gmail.com">bavatubooking@gmail.com</a></p>
         <p style="margin:6px 0"><strong>Address:</strong> Home Spa — 17 Đường số 11, KDC Him Lam, P. Tân Hưng (by appointment).</p>
-        <p style="margin:6px 0"><strong>Maps:</strong> <a class="link-underline" href="https://maps.app.goo.gl/XbxCXbRBKfDJX4zj7?_imcp=1" target="_blank" rel="noopener">Mở trong Google Maps</a></p>
+        <p style="margin:6px 0"><strong>Maps:</strong>
+          <a class="link-underline"
+             href="https://www.google.com/maps/search/?api=1&query=Home%20Spa%20%E2%80%94%2017%20%C4%90%C6%B0%E1%BB%9Dng%20s%E1%BB%91%2011%2C%20KDC%20Him%20Lam%2C%20Ph%C6%B0%E1%BB%9Dng%20T%C3%A2n%20H%C6%B0ng%2C%20Qu%E1%BA%ADn%207"
+             target="_blank" rel="noopener">Mở trong Google Maps</a>
+        </p>
       </div>
 
       <div class="glass">
         <div class="faq">
           <div class="faq-item">
-            <div class="faq-q">BAVATU có phục vụ tại nhà không?
-              <span class="chev">▼</span>
-            </div>
+            <div class="faq-q">BAVATU có phục vụ tại nhà không? <span class="chev">▼</span></div>
             <div class="faq-a"><div>
               <p>Hiện tại BAVATU phục vụ theo lịch hẹn riêng, tại không gian Home Spa kín đáo và yên tĩnh để đảm bảo trải nghiệm tốt nhất.</p>
             </div></div>
           </div>
 
           <div class="faq-item">
-            <div class="faq-q">Có cần chuẩn bị gì trước khi trải nghiệm?
-              <span class="chev">▼</span>
-            </div>
+            <div class="faq-q">Có cần chuẩn bị gì trước khi trải nghiệm? <span class="chev">▼</span></div>
             <div class="faq-a"><div>
               <p>Anh/chị chỉ cần đến đúng giờ đã hẹn. Chúng tôi chuẩn bị đầy đủ khăn, đồ uống ấm và những điều nhỏ tinh tế dành riêng cho anh/chị.</p>
             </div></div>
           </div>
 
           <div class="faq-item">
-            <div class="faq-q">Có hỗ trợ chọn gói theo nhu cầu không?
-              <span class="chev">▼</span>
-            </div>
+            <div class="faq-q">Có hỗ trợ chọn gói theo nhu cầu không? <span class="chev">▼</span></div>
             <div class="faq-a"><div>
               <p>Có. Sau khi đặt lịch, anh/chị có thể nhập form sở thích/cơ địa; BAVATU sẽ cá nhân hoá liệu trình phù hợp.</p>
             </div></div>
@@ -379,43 +425,106 @@
     </div>
   </section>
 
-  <!-- Footer (1 tầng, nền ảnh) -->
+  <!-- FOOTER (1 tầng, nền ảnh) -->
   <footer>
     <div class="footer-overlay" aria-hidden="true"></div>
     <div class="footer-inner container">
       <h3>Ở BAVATU, mỗi khoảnh khắc chạm là một hành trình trở về.</h3>
       <p>Cảm ơn bạn đã để BAVATU đồng hành cùng những phút lắng lại của thân và tâm.</p>
-      <img class="footer-logo" src="logo-khong-nen.png" alt="BAVATU logo">
+      <img class="footer-logo" src="logo-khong-nen.png" alt="BAVATU logo" loading="lazy" decoding="async">
       <div class="copyright">© 2025 BAVATU. Built as a permanent hub for our clients — beyond social media.</div>
     </div>
   </footer>
 
+  <!-- JSON-LD: DaySpa (Local SEO) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "DaySpa",
+    "name": "BAVATU – Home Spa",
+    "image": "https://bavatu-spa.github.io/bavatu/logo-khong-nen.png",
+    "url": "https://bavatu-spa.github.io/bavatu/",
+    "telephone": "+84937477951",
+    "priceRange": "900K–1.400K",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "17 Đường số 11, KDC Him Lam, P. Tân Hưng",
+      "addressLocality": "Quận 7",
+      "addressRegion": "Hồ Chí Minh",
+      "addressCountry": "VN"
+    },
+    "openingHoursSpecification": [{
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+      "opens": "09:00",
+      "closes": "21:00"
+    }],
+    "sameAs": ["https://zalo.me/0937477951"]
+  }
+  </script>
+
+  <!-- JSON-LD: FAQ -->
+  <script type="application/ld+json">
+  {
+   "@context": "https://schema.org",
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "BAVATU có phục vụ tại nhà không?",
+     "acceptedAnswer": {"@type":"Answer","text":"Hiện tại BAVATU phục vụ theo lịch hẹn riêng, tại không gian Home Spa kín đáo và yên tĩnh để đảm bảo trải nghiệm tốt nhất."}
+    },
+    {
+     "@type": "Question",
+     "name": "Đặt lịch như thế nào?",
+     "acceptedAnswer": {"@type":"Answer","text":"Bấm vào 3 bước ở mục Booking: Kiểm tra lịch, Điền form, Xác nhận qua Zalo."}
+    }
+   ]
+  }
+  </script>
+
+  <!-- Slideshow + FAQ toggle + SW register -->
   <script>
-    /* ===== Slideshow Our Story ===== */
+    // Story slider
     (function(){
       const wrap = document.querySelector('.slide');
       if(!wrap) return;
-      const imgs = [...wrap.querySelectorAll('img')].filter(i=>i.complete || i.naturalWidth || i.src);
+      const imgs = [...wrap.querySelectorAll('img')];
       let k = 0, timer;
-
-      const show = (i)=>{
-        imgs.forEach((im,idx)=> im.style.opacity = (idx===i?1:0));
-      }
+      const show = (i)=> imgs.forEach((im,idx)=> im.style.opacity = (idx===i?1:0));
       const next = ()=>{ k = (k+1)%imgs.length; show(k) }
       const prev = ()=>{ k = (k-1+imgs.length)%imgs.length; show(k) }
       const play = ()=>{ clearInterval(timer); timer = setInterval(next, 3800) }
-
       wrap.querySelector('.next').addEventListener('click', ()=>{ next(); play();});
       wrap.querySelector('.prev').addEventListener('click', ()=>{ prev(); play();});
+      wrap.addEventListener('mouseenter', ()=> clearInterval(timer));
+      wrap.addEventListener('mouseleave', play);
       show(0); play();
     })();
 
-    /* ===== FAQ toggle ===== */
+    // FAQ toggle
     document.querySelectorAll('.faq-q').forEach(q=>{
-      q.addEventListener('click',()=>{
-        q.parentElement.classList.toggle('open');
-      });
+      q.addEventListener('click',()=> q.parentElement.classList.toggle('open'));
     });
+
+    // Service Worker (PWA + offline)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/bavatu/sw.js', { scope: '/bavatu/' })
+          .then(reg => console.log('SW registered:', reg.scope))
+          .catch(err => console.warn('SW registration failed:', err));
+      });
+    }
   </script>
+<script>
+  // Toggle mobile menu
+  const header = document.querySelector('.nav');
+  const toggle = document.querySelector('.menu-toggle');
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      header.classList.toggle('open');
+    });
+  }
+</script>
 </body>
 </html>
