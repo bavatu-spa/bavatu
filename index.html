@@ -427,10 +427,67 @@ footer.visible{                       /* JS sẽ gắn class này */
   font-family:"Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   margin-top:6px;
 }
+/* === BLOOM INTRO (1 nhịp thở, nâu ấm) === */
+#bv-bloom{
+  position:fixed; inset:0; z-index:9999;
+  display:grid; place-items:center;
+  background:#1b120c; color:#f3ede4;
+  overflow:hidden;
+  transition:opacity .8s ease, transform .8s ease;
+}
+#bv-bloom.leaving{ opacity:0; transform:scale(1.02); pointer-events:none; }
+
+/* nền mờ + bloom nhẹ */
+#bv-bloom .bv-bloom-bg{
+  position:absolute; inset:-10%;
+  background:
+    radial-gradient(1200px 600px at 50% 60%, rgba(255,220,180,.08), transparent 60%),
+    radial-gradient(600px 600px at 50% 45%, rgba(255,214,177,.06), transparent 60%),
+    linear-gradient(180deg, rgba(12,8,5,.35), rgba(12,8,5,.75));
+  animation:bvPulse 2.8s ease-in-out infinite alternate;
+}
+@keyframes bvPulse{
+  0%{ transform:scale(1); filter:brightness(.98); }
+  100%{ transform:scale(1.04); filter:brightness(1); }
+}
+
+/* nội dung giữa */
+#bv-bloom .bv-bloom-center{ position:relative; text-align:center; padding:24px; }
+#bv-bloom .bv-mark{ display:block; margin:0 auto 14px; opacity:.95; filter:drop-shadow(0 10px 30px rgba(0,0,0,.45)); }
+#bv-bloom .bv-line{ margin:0 0 14px; font-weight:600; letter-spacing:.2px; }
+
+#bv-bloom .bv-btn{
+  appearance:none; border:0; cursor:pointer;
+  padding:10px 18px; border-radius:999px;
+  background:#cf956e; color:#fff; font-weight:700;
+  box-shadow:0 8px 24px rgba(207,149,110,.35);
+}
+#bv-bloom .bv-btn:hover{ filter:brightness(1.03); }
+
+/* tôn trọng người hạn chế chuyển động */
+@media (prefers-reduced-motion:reduce){
+  #bv-bloom .bv-bloom-bg{ animation:none; }
+  #bv-bloom{ transition:none; }
+}
 </style>
 </head>
 <body>
+<!-- BLOOM INTRO -->
+<div id="bv-bloom" aria-label="BAVATU intro">
+  <div class="bv-bloom-bg"></div>
 
+  <div class="bv-bloom-center">
+    <img class="bv-mark" src="favicon-96x96.png" alt="BAVATU mark" width="64" height="64">
+    <p class="bv-line">Trước khi vào, xin bạn một nhịp thở.</p>
+    <button id="bv-enter" class="bv-btn" type="button">Vào không gian</button>
+  </div>
+
+  <!-- Âm thanh giọt nước -->
+  <audio id="bv-drop" preload="auto">
+    <source src="bavatu-drop.mp3?v=1" type="audio/mpeg">
+    <source src="bavatu-drop.m4a?v=1" type="audio/mp4">
+  </audio>
+</div>
   <!-- Header -->
   <header>
   <div class="container nav">
@@ -815,6 +872,46 @@ Không một cái Chạm nào là vô nghĩa – mỗi chuyển động đều m
     }, { threshold: 0.2 });
     io.observe(footerEl);
   }
+</script>
+<script>
+(() => {
+  const overlay = document.getElementById('bv-bloom');
+  const btn = document.getElementById('bv-enter');
+  const audio = document.getElementById('bv-drop');
+
+  // Nếu đã xem intro rồi => bỏ qua luôn
+  if (localStorage.getItem('bvSeenIntro') === '1') {
+    overlay.remove();
+    return;
+  }
+
+  // Ẩn scroll trong lúc chờ intro
+  const html = document.documentElement;
+  const prevOverflow = html.style.overflow;
+  html.style.overflow = 'hidden';
+
+  // Khi click “Vào không gian”
+  btn.addEventListener('click', () => {
+    // Safari & Chrome yêu cầu play trong event handler (user gesture)
+    if (audio) {
+      try {
+        audio.currentTime = 0;
+        audio.volume = 1;
+        audio.play().catch(() => {});
+      } catch (err) { console.warn('Audio play error:', err); }
+    }
+
+    // Thêm hiệu ứng mờ dần & mở trang chính
+    overlay.classList.add('leaving');
+    localStorage.setItem('bvSeenIntro', '1');
+
+    // Cho phép cuộn & xoá overlay sau 1s
+    setTimeout(() => {
+      html.style.overflow = prevOverflow;
+      overlay.remove();
+    }, 1000);
+  }, { once: true });
+})();
 </script>
 </body>
 </html>
