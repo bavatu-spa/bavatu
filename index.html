@@ -448,22 +448,41 @@ footer.visible{                       /* JS sẽ gắn class này */
   box-shadow:0 10px 28px rgba(207,149,110,.35);
 }
 .bv-bloom-btn:hover{ filter:brightness(1.05); }
+/* Hiệu ứng từng chữ theo giọt nước */
+#bv-bloom .bv-words{ 
+  display:flex; gap:.5ch; justify-content:center; 
+  font-weight:600; letter-spacing:.2px; color:#f6efe7; 
+  margin-top:10px;
+}
+#bv-bloom .word{
+  opacity:0; transform:translateY(8px); filter:blur(4px);
+  transition:opacity .45s ease, transform .45s ease, filter .45s ease;
+  display:inline-block;
+}
+#bv-bloom .word.show{
+  opacity:1; transform:translateY(0); filter:blur(0);
+}
 </style>
 </head>
 <body>
 <!-- BAVATU intro overlay -->
 <div id="bv-bloom" aria-hidden="true">
-  <div class="bv-bloom-inner">
-    <img class="bv-bloom-mark" src="favicon.png" alt="BAVATU" width="72" height="72">
-    <p class="bv-bloom-line">Trước khi vào, xin bạn một nhịp thở.</p>
+  <div class="bv-words" aria-live="polite" aria-label="Xin bạn một nhịp thở">
+  <span class="word" data-step="1">Xin</span>
+  <span class="word" data-step="2">bạn</span>
+  <span class="word" data-step="3">một</span>
+  <span class="word" data-step="4">nhịp</span>
+  <span class="word" data-step="5">thở</span>
+</div>
     <button id="bv-enter" class="bv-bloom-btn">Vào không gian</button>
   </div>
 
   <!-- audio must be in DOM for Safari; keep preload="auto" -->
-  <audio id="bv-drop" preload="auto">
-    <source src="bavatu-drop.mp3?v=2" type="audio/mpeg">
-  </audio>
+  <audio id="bv-drop" preload="auto" playsinline>
+  <source src="bavatu-drop.mp3?v=3" type="audio/mpeg">
+</audio>
 </div>
+
   <!-- Header -->
   <header>
   <div class="container nav">
@@ -854,41 +873,72 @@ Không một cái Chạm nào là vô nghĩa – mỗi chuyển động đều m
   const overlay = document.getElementById('bv-bloom');
   const btn = document.getElementById('bv-enter');
   const audio = document.getElementById('bv-drop');
+  const words = [...document.querySelectorAll('#bv-bloom .word')];
 
-  // Dùng key mới để chắc chắn intro hiển thị lại
-  const SEEN_KEY = 'bvSeenIntro_v2';
-
-  // Cho phép test lại bằng ?intro=1
+  const html = document.documentElement;
+  const prevOverflow = html.style.overflow;
+  const SEEN_KEY = 'bvSeenIntro_v3';
   const forced = new URLSearchParams(location.search).get('intro') === '1';
 
   if (!forced && localStorage.getItem(SEEN_KEY) === '1') {
-    overlay.remove();
-    return;
+    overlay?.remove(); return;
   }
-
-  // Khóa cuộn khi intro hiển thị
-  const html = document.documentElement;
-  const prevOverflow = html.style.overflow;
   html.style.overflow = 'hidden';
 
-  btn.addEventListener('click', async () => {
-    try {
-      audio.currentTime = 0;
-      audio.volume = 0.9;
-      await audio.play().catch(()=>{});
-    } catch(e){}
+  function closeOverlay(){
+    if(!overlay) return;
+    overlay.classList.add('leaving');
+    overlay.style.pointerEvents = 'none';
+    const cleanup = () => {
+      overlay.removeEventListener('transitionend', cleanup);
+      overlay.remove(); html.style.overflow = prevOverflow || '';
+    };
+    overlay.addEventListener('transitionend', cleanup);
+    setTimeout(cleanup, 1200);
+  }
 
-    // Giữ màn hình ~0.9s cho người xem “thở”
-    setTimeout(() => {
-      overlay.classList.add('leaving');
-      localStorage.setItem(SEEN_KEY, '1');
+  // --- phiên bản 5 giọt = 5 chữ ---
+  function playDrop(){
+    try{
+      if(audio){
+        audio.currentTime = 0;
+        audio.muted = false; audio.volume = 1;
+        audio.play().catch(()=>{});
+      }
+    }catch(e){}
+  }
 
-      setTimeout(() => {
-        html.style.overflow = prevOverflow;
-        overlay.remove();
-      }, 900); // khớp với hiệu ứng mờ
-    }, 900);   // thời gian dừng trước khi fade
-  }, { once:true });
+  function proceed(){
+    // Lần lượt hiện từng chữ theo nhịp drop
+    let i = 0;
+    const STEP = 420; // ms giữa các giọt (có thể 380–480 tuỳ anh thích)
+    function tick(){
+      if (i < words.length){
+        words[i].classList.add('show');  // lộ chữ
+        playDrop();                       // phát giọt
+        i++;
+        setTimeout(tick, STEP);
+      }else{
+        // đợi nhịp nhỏ rồi đóng
+        setTimeout(() => {
+          localStorage.setItem(SEEN_KEY,'1');
+          closeOverlay();
+        }, 600);
+      }
+    }
+    tick();
+  }
+
+  btn?.addEventListener('click', (e)=>{ e.preventDefault(); proceed(); }, {once:true});
+  overlay?.addEventListener('keydown', (e)=>{
+    if(e.key==='Enter' || e.key===' '){ e.preventDefault(); proceed(); }
+  });
+  overlay?.addEventListener('click', (e)=>{
+    const isBtn = (e.target === btn || btn?.contains(e.target));
+    if(!isBtn) proceed();
+  }, {once:true});
+
+  window.addEventListener('load', ()=>{ try{ audio?.load(); }catch(e){} });
 })();
 </script>
 </body>
