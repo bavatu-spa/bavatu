@@ -5,7 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>BAVATU — Home Spa | Hơn cả sự thư giãn</title>
 
-  <!-- Favicon (ưu tiên Favicon.webp; nếu file của anh là favicon.webp, đổi tên cho khớp hoặc sửa đường dẫn này) -->
+  <!-- Favicon & App Icons -->
+<link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#3d2315">
   <link rel="icon" type="image/webp" href="Favicon.webp"/>
 
   <!-- PWA -->
@@ -116,15 +120,79 @@
     .faq-item.open .faq-a{grid-template-rows:1fr}
     .faq-item.open .chev{transform:rotate(180deg)}
 
-    /* Footer (1 tầng, nền ảnh footer-hinh-nen.webp) */
-    footer{position:relative;color:#fff;text-align:center;isolation:isolate;background:url("footer-hinh-nen.webp") center/cover no-repeat}
-    .footer-overlay{background:linear-gradient(180deg,rgba(18,12,8,.65),rgba(18,12,8,.72));position:absolute;inset:0;z-index:0}
-    .footer-inner{position:relative;z-index:1;min-height:64vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:64px 22px;gap:18px}
-    .footer-inner h3{margin:0;color:#fff;font-weight:800;font-size:clamp(28px,4.2vw,52px);text-shadow:0 10px 30px rgba(0,0,0,.45)}
-    .footer-inner p{margin:0 0 14px 0;font-size:clamp(16px,2vw,22px);opacity:.95}
-    .footer-logo{width:84px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.45))}
-    .copyright{font-size:13px;opacity:.8;margin-top:6px}
+/* === FOOTER (nền ảnh + fade-in khi scroll) === */
+footer{
+  position:relative;
+  color:#fff;
+  text-align:center;
+  isolation:isolate;
+  background:url("footer-hinh-nen.webp") center/cover no-repeat;
+  opacity:0;                          /* Ẩn ban đầu để fade-in */
+  transform:translateY(30px);
+  transition:opacity 1.2s ease, transform 1.2s ease;
+}
+footer.visible{                       /* JS sẽ gắn class này */
+  opacity:1;
+  transform:translateY(0);
+}
 
+/* Overlay mờ */
+.footer-overlay{
+  background:linear-gradient(180deg, rgba(18,12,8,.65), rgba(18,12,8,.72));
+  position:absolute;
+  inset:0;
+  z-index:0;
+}
+
+/* Nội dung */
+.footer-inner{
+  position:relative;
+  z-index:1;
+  min-height:64vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:64px 22px;
+  gap:18px;
+}
+
+/* Tiêu đề */
+.footer-inner h3{
+  margin:0;
+  color:#fff;
+  font-weight:800;
+  font-family:"Playfair Display", serif;
+  font-size:clamp(22px,3vw,40px);
+  text-shadow:0 10px 30px rgba(0,0,0,.45);
+}
+
+/* Dòng phụ (đồng bộ với hero: sans-serif, dễ đọc) */
+.footer-inner p{
+  margin:0 0 14px 0;
+  color:#f3ede4;
+  font-family:"Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-size:clamp(15px,2vw,20px);
+  opacity:.9;
+  text-shadow:0 8px 24px rgba(0,0,0,.45);
+}
+
+/* Logo dưới copyright — theo yêu cầu 200px */
+.footer-logo{
+  width:200px;
+  filter:drop-shadow(0 8px 24px rgba(0,0,0,.45));
+  opacity:.95;
+  margin:12px 0;
+}
+
+/* Copyright */
+.copyright{
+  font-size:13px;
+  opacity:.7;
+  font-family:"Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  margin-top:6px;
+
+}
     /* Responsive */
     @media (max-width: 960px){
       .story-grid,.contact-grid,.steps,.menu-grid{grid-template-columns:1fr}
@@ -240,7 +308,125 @@
     aspect-ratio: 16/10;
   }
 }
-  </style>
+
+  /* Underline xanh tinh tế cho link trong khu vực Contact */
+#contact .link-underline {
+  display: inline-block;
+  color: #aee3ff;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.25s ease;
+}
+#contact .link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #4fc3f7, #81d4fa);
+  border-radius: 1px;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.25s ease;
+  opacity: 0.9;
+}
+#contact .link-underline {
+  display: inline-block;
+  color: #aee3ff;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.25s ease;
+}
+#contact .link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #4fc3f7, #81d4fa);
+  border-radius: 1px;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.25s ease;
+  opacity: .9;
+}
+#contact .link-underline:hover::after { transform-origin: left; transform: scaleX(1); }
+
+/* === FOOTER (nền ảnh + fade-in khi scroll) === */
+footer{
+  position:relative;
+  color:#fff;
+  text-align:center;
+  isolation:isolate;
+  background:url("footer-hinh-nen.webp") center/cover no-repeat;
+  opacity:0;                          /* Ẩn ban đầu để fade-in */
+  transform:translateY(30px);
+  transition:opacity 1.2s ease, transform 1.2s ease;
+}
+footer.visible{                       /* JS sẽ gắn class này */
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* Overlay mờ */
+.footer-overlay{
+  background:linear-gradient(180deg, rgba(18,12,8,.65), rgba(18,12,8,.72));
+  position:absolute;
+  inset:0;
+  z-index:0;
+}
+
+/* Nội dung */
+.footer-inner{
+  position:relative;
+  z-index:1;
+  min-height:64vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:64px 22px;
+  gap:18px;
+}
+
+/* Tiêu đề */
+.footer-inner h3{
+  margin:0;
+  color:#fff;
+  font-weight:800;
+  font-family:"Playfair Display", serif;
+  font-size:clamp(22px,3vw,40px);
+  text-shadow:0 10px 30px rgba(0,0,0,.45);
+}
+
+/* Dòng phụ */
+.footer-inner p{
+  margin:0 0 14px 0;
+  color:#f3ede4;
+  font-family:"Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-size:clamp(15px,2vw,20px);
+  opacity:.9;
+  text-shadow:0 8px 24px rgba(0,0,0,.45);
+}
+
+/* Logo dưới copyright — theo yêu cầu 200px */
+.footer-logo{
+  width:200px;
+  filter:drop-shadow(0 8px 24px rgba(0,0,0,.45));
+  opacity:.95;
+  margin:12px 0;
+}
+
+/* Copyright */
+.copyright{
+  font-size:13px;
+  opacity:.7;
+  font-family:"Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  margin-top:6px;
+}
+</style>
 </head>
 <body>
 
@@ -259,13 +445,82 @@
   </div>
 </header>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="container">
-      <h1>BAVATU — Home Spa</h1>
-      <p class="lead">Hơn cả sự thư giãn · Trọn vẹn trải nghiệm dành riêng cho bạn.</p>
-    </div>
-  </section>
+  <!-- ===== HERO BAVATU — VIETNAMESE-SAFE FONTS ===== -->
+<!-- Fonts: Merriweather (serif) + Be Vietnam Pro (sans), đều hỗ trợ tiếng Việt -->
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500&family=Merriweather:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 88vh;
+    overflow: hidden;
+    background: #1e120c;
+  }
+  .hero-bg{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    filter:brightness(0.88);
+  }
+  .hero-overlay{
+    position:absolute; inset:0;
+    background:linear-gradient(to bottom, rgba(20,10,5,0.55), rgba(20,10,5,0.8));
+  }
+  .hero-center{
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    text-align:center; color:#fff; width:100%;
+    padding:0 20px;
+    animation:fadeInHero 1.2s ease-out forwards;
+    transition:opacity .8s ease-out, transform .8s ease-out;
+  }
+  /* Mờ nhẹ khi cuộn xuống */
+  body.scrolled .hero-center{ opacity:.48; transform:translate(-50%,-50%) scale(.992); }
+
+  .hero-center h1{
+    font-family:'Merriweather', serif;
+    font-weight:700;
+    font-size:clamp(34px,5vw,58px);
+    letter-spacing:.3px;
+    margin:0 0 12px;
+  }
+  .hero-center p{
+    font-family:'Be Vietnam Pro', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    font-weight:300;
+    font-size:clamp(15px,2vw,20px);
+    color:rgba(255,255,255,.92);
+    margin:0;
+  }
+
+  @keyframes fadeInHero{
+    from{opacity:0; transform:translate(-50%,-46%);}
+    to{opacity:1; transform:translate(-50%,-50%);}
+  }
+
+  @media (max-width:480px){
+    .hero{height:80vh;}
+    .hero-center h1{font-size:30px;}
+    .hero-center p{font-size:14px;}
+  }
+</style>
+
+<section class="hero" id="hero">
+  <img class="hero-bg" src="hero-hinh-nen.webp" alt="BAVATU Background">
+  <div class="hero-overlay"></div>
+  <div class="hero-center">
+    <h1>BAVATU — Home Spa</h1>
+    <p>Hơn cả sự thư giãn · Trọn vẹn trải nghiệm dành riêng cho bạn</p>
+  </div>
+</section>
+
+<script>
+  // Fade-out nhẹ khi cuộn
+  window.addEventListener('scroll', () => {
+    document.body.classList.toggle('scrolled', window.scrollY > 100);
+  });
+</script>
+<!-- ===== END HERO ===== -->
 
   <!-- OUR STORY + SLIDE -->
   <section id="why" class="container">
@@ -458,6 +713,7 @@ Không một cái Chạm nào là vô nghĩa – mỗi chuyển động đều m
     </div>
   </footer>
 
+
   <!-- JSON-LD: DaySpa (Local SEO) -->
   <script type="application/ld+json">
   {
@@ -546,6 +802,15 @@ Không một cái Chạm nào là vô nghĩa – mỗi chuyển động đều m
     toggle.addEventListener('click', () => {
       header.classList.toggle('open');
     });
+  }
+
+  // Khi footer xuất hiện trong vùng nhìn, thêm class "visible"
+  const footerEl = document.querySelector("footer");
+  if ('IntersectionObserver' in window && footerEl) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(en => { if (en.isIntersecting) footerEl.classList.add('visible'); });
+    }, { threshold: 0.2 });
+    io.observe(footerEl);
   }
 </script>
 </body>
