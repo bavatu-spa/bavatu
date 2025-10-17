@@ -437,7 +437,6 @@ footer.visible{                       /* JS sẽ gắn class này */
 }
 #bv_bloom.on{ opacity:1; pointer-events:auto; }
 
-#bv_bloom.leaving{ opacity:0; pointer-events:none; }
 
 /* khung trong */
 #bv_bloom .bv-inner{
@@ -494,12 +493,31 @@ footer.visible{                       /* JS sẽ gắn class này */
 #bv_bloom.btn-on .bv-bloom-btn{ opacity:1; pointer-events:auto; }
 
 /* nút bật âm (fallback) */
-.bv-sound{
-  position:absolute; right:16px; bottom:16px;
-  background:rgba(255,255,255,.12); color:#fff; border:1px solid rgba(255,255,255,.25);
-  border-radius:10px; padding:6px 10px; backdrop-filter:blur(6px);
-  font-size:13px;
+/* Nút bật âm (chỉ hiện khi cần) */
+#bv-sound{
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 10010;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  color: #f7efe6;
+  border: 1px solid rgba(255,255,255,.18);
+  backdrop-filter: blur(8px);
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity .25s ease, transform .25s ease;
 }
+#bv-sound.show{
+  opacity: .92;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+#bv-sound:active{ transform: translateY(1px); opacity:.85; }
 
 /* khi overlay mở: khóa scroll body */
 html.bv-lock, body.bv-lock{ overflow:hidden; }
@@ -512,9 +530,9 @@ body.intro-done  > :not(#bv_bloom){ opacity:1; }
   position:fixed; inset:0; z-index:9999;
   display:grid; place-items:center;
   background:#1d120c;            /* nâu ấm */
-  opacity:1; pointer-events:auto; /* luôn hiện ngay từ đầu */
+  opacity:1; pointer-events:auto; transition: opacity .6s ease; /* luôn hiện ngay từ đầu */
 }
-#bv_bloom.leaving{ opacity:0; pointer-events:none; transition:opacity .6s ease; }
+#bv_bloom.leaving{ opacity:0; pointer-events:none; }
 
 /* khung trong */
 #bv_bloom .bv-inner{
@@ -597,7 +615,7 @@ body.intro-done  > :not(#bv_bloom){ opacity:1; }
 #bv_bloom.btn-on .bv-bloom-btn{ opacity:1; pointer-events:auto; }
 
 /* nút bật âm (fallback Safari) */
-.bv-sound{
+#bv-sound{
   position:absolute; right:16px; bottom:16px;
   background:rgba(255,255,255,.12); color:#fff;
   border:1px solid rgba(255,255,255,.25);
@@ -683,17 +701,17 @@ body.intro-done  > :not(#bv_bloom){ opacity:1; }
     <!-- nút vào (vẫn có, nhưng intro vẫn auto) -->
     
 
-    <!-- âm thanh giọt -->
-    <audio id="bv-drop" preload="auto" playsinline>
-      <source src="bavatu-drop.mp3?v=5" type="audio/mpeg">
-    </audio>
+    <!-- Âm thanh giọt nước -->
+<audio id="bv-drop" preload="auto" playsinline>
+  <source src="bavatu-drop.mp3?v=5" type="audio/mpeg">
+</audio>
 
-    <!-- fallback bật âm nếu Safari chặn -->
-    <button id="bv-sound" class="bv-sound" hidden type="button">Bật âm</button>
-  </div>
+<!-- Nút bật âm: chỉ hiện khi cần -->
+<button id="bv-sound" aria-label="Bật âm" title="Bật âm">Bật âm</button>
+
 </div>
 <!-- === /Bloom intro === -->
-</header>
+</div>
 
   <!-- ===== HERO BAVATU — VIETNAMESE-SAFE FONTS ===== -->
 <!-- Fonts: Merriweather (serif) + Be Vietnam Pro (sans), đều hỗ trợ tiếng Việt -->
@@ -1066,72 +1084,72 @@ Không một cái Chạm nào là vô nghĩa – mỗi chuyển động đều m
   }
 </script>
 <script>
-(()=>{
-  const body     = document.body;
+(() => {
+  // ===== THỜI GIAN / NHỊP =====
+  const INTRO_MIN = 2400;   // tối thiểu ở lại Bloom ~2.4s
+  const INTRO_MAX = 5200;   // trễ nhất 5.2s vẫn vào trang
+  const GAP       = 520;    // nhịp hiện từng chữ (ms)
+
   const bloom    = document.getElementById('bv_bloom');
-  const words    = Array.from(bloom.querySelectorAll('.word'));
-  const soundBtn = document.getElementById('bv-sound');
+  const ripples  = document.querySelector('#bv_bloom .ripples');
+  const words    = [...document.querySelectorAll('#bv_bloom .bv-words .word')]; // <— SỬA
   const audioEl  = document.getElementById('bv-drop');
+  const soundBtn = document.getElementById('bv-sound');
 
-  // Nhịp hiển thị chữ + auto vào trang
-  const START_DELAY   = 350;   // chờ trước khi hiện chữ
-  const WORD_DELAY    = 380;   // mỗi chữ cách nhau 0.38s
-  const AUTO_CLOSE_MS = 5000;  // tự vào trang sau 5s
+  let unlocked = false;
 
-  function showWords(){
-    setTimeout(()=>{
-      words.forEach((w,i)=> setTimeout(()=> w.classList.add('show'), i*WORD_DELAY));
-    }, START_DELAY);
+  function updateSoundBtn(){
+    soundBtn?.classList.toggle('show', !unlocked);
   }
 
-  function playDropSafe(){
-    if(!audioEl) return;
-    audioEl.volume = 0.95;
-    audioEl.currentTime = 0;
-    // cố gắng phát (Chrome/Edge)
-    audioEl.play().catch(()=> {
-      // nếu bị chặn (Safari/iOS) -> hiện nút bật âm
-      soundBtn.hidden = false;
-    });
-    // retry nhẹ cho Safari
-    setTimeout(()=> audioEl.play().catch(()=>{}), 600);
+  // Hiện chữ theo nhịp + chạy ripple
+  function startVisual(){
+    words.forEach((w,i)=> setTimeout(()=> w.classList.add('show'), i*GAP));
+    ripples?.classList.add('run'); // <— SỬA: kích hoạt sóng
   }
 
-  function startIntro(){
-    // Bật ripple 1 lần (đúng selector .ripples)
-    const ripples = document.querySelector('#bv_bloom .ripples');
-    if (ripples) ripples.classList.add('run');
-
-    playDropSafe();
-    showWords();
-
-    // Auto đóng sau 5 giây
-    setTimeout(closeIntro, AUTO_CLOSE_MS);
+  // Thử phát âm thanh (có thể bị chặn)
+  async function tryPlay(){
+    try{
+      audioEl.currentTime = 0;
+      audioEl.volume = 0.9;
+      await audioEl.play();
+      return true;
+    }catch(e){
+      return false;
+    }
   }
 
-  function closeIntro(){
-    if (!bloom) return;
+  // Vào trang chính
+  function openSite(){
+    if (bloom.classList.contains('leaving')) return;
     bloom.classList.add('leaving');
-    setTimeout(()=>{
-      bloom.remove();
-      body.classList.remove('is-intro');
-      body.classList.add('intro-done');
-    }, 600);
+    document.body.classList.add('intro-done');
+    setTimeout(()=> { bloom.style.display = 'none'; }, 650);
   }
 
-  // Fallback bật âm nếu bị chặn
-  soundBtn.addEventListener('click', ()=>{
-    soundBtn.hidden = true;
-    playDropSafe();
+  // Click “Bật âm” để mở khóa audio (Safari/Chrome strict)
+  function unlockOnce(){
+    tryPlay().then(ok => { unlocked = ok; updateSoundBtn(); });
+  }
+  soundBtn?.addEventListener('click', unlockOnce);
+
+  // ===== KHỞI ĐỘNG NGAY KHI DOM SẴN SÀNG =====
+  document.addEventListener('DOMContentLoaded', () => {
+    startVisual();                             // chạy ngay
+    // “nudge” nhẹ cho Safari
+    setTimeout(()=> tryPlay().then(ok => {
+      unlocked = ok; updateSoundBtn();
+      if (ok) audioEl.addEventListener('ended', openSite, {once:true});
+    }), 120);
+
+    // Bảo hiểm thời gian: audio-end / min time / hard cap
+    const byAudioEnd = new Promise(r => audioEl.addEventListener('ended', r, {once:true}));
+    const byMinTime  = new Promise(r => setTimeout(r, INTRO_MIN));
+    const byHardCap  = new Promise(r => setTimeout(r, INTRO_MAX));
+
+    Promise.race([byAudioEnd, byMinTime, byHardCap]).then(openSite);
   });
-
-  // iOS: lần chạm đầu bật audio
-  window.addEventListener('pointerdown', ()=> {
-    if (audioEl && audioEl.paused) playDropSafe();
-  }, { once:true });
-
-  // Bắt đầu intro khi DOM sẵn sàng
-  document.addEventListener('DOMContentLoaded', startIntro);
 })();
 </script>
 </body>
