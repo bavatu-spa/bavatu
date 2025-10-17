@@ -448,54 +448,112 @@ footer.visible{                       /* JS sẽ gắn class này */
   box-shadow:0 10px 28px rgba(207,149,110,.35);
 }
 .bv-bloom-btn:hover{ filter:brightness(1.05); }
-/* Hiệu ứng từng chữ theo giọt nước */
-#bv-bloom .bv-words{ 
-  display:flex; gap:.5ch; justify-content:center; 
-  font-weight:600; letter-spacing:.2px; color:#f6efe7; 
-  margin-top:10px;
+/* Nền nâu trầm phủ toàn màn hình */
+#bv-bloom{
+  position:fixed; inset:0; z-index:9999;
+  background:#1b120b;
+  display:grid; place-items:center;
+  overflow:hidden;
+  transition:opacity .9s ease, transform .9s ease;
+}
+
+/* Ẩn khi rời */
+#bv-bloom.leaving{ opacity:0; transform:scale(1.04); pointer-events:none; }
+
+/* Điểm rơi + gợn lan – đặt vị trí bằng CSS variables --x, --y (px) */
+#bv-ripple{
+  position:absolute;
+  left:var(--x,50%); top:var(--y,50%);
+  transform:translate(-50%,-50%);
+  width:420px; height:420px; pointer-events:none;
+}
+
+/* chấm giọt rơi */
+#bv-ripple .dot{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:14px; height:14px; border-radius:50%;
+  background:#f2d6b8; box-shadow:0 0 16px 4px rgba(242,214,184,.45);
+  opacity:0;
+}
+
+/* 3 vòng gợn nước */
+#bv-ripple .ring{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(.1);
+  width:240px; height:240px; border-radius:50%;
+  box-shadow:0 0 0 2px rgba(244,220,193,.35), 0 0 70px rgba(244,220,193,.12) inset;
+  opacity:0;
+}
+#bv-ripple .r1{ animation:ripple 1.8s ease-out .0s forwards; }
+#bv-ripple .r2{ animation:ripple 2.2s ease-out .18s forwards; }
+#bv-ripple .r3{ animation:ripple 2.6s ease-out .36s forwards; }
+
+@keyframes ripple{
+  0%{ transform:translate(-50%,-50%) scale(.1); opacity:.0; }
+  15%{ opacity:.9; }
+  100%{ transform:translate(-50%,-50%) scale(1.25); opacity:0; }
+}
+
+/* chấm giọt xuất hiện cực ngắn khi “tách” */
+#bv-bloom.play .dot{ animation:dropDot .22s ease-out .02s both; }
+@keyframes dropDot{
+  0%{ opacity:0; transform:translate(-50%,-50%) scale(.4); }
+  45%{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+  100%{ opacity:0; transform:translate(-50%,-50%) scale(.7); }
+}
+
+/* Cụm chữ ở đúng vị trí giọt rơi */
+#bv-bloom .bv-words{
+  position:absolute; left:var(--x,50%); top:calc(var(--y,50%) + 76px);
+  transform:translate(-50%,0);
+  display:flex; gap:.55ch; color:#f7eada;
+  font-family:"Playfair Display", serif; font-weight:700;
+  font-size:clamp(22px,2.6vw,34px); letter-spacing:.3px;
+  pointer-events:none;
 }
 #bv-bloom .word{
-  opacity:0; transform:translateY(8px); filter:blur(4px);
-  transition:opacity .45s ease, transform .45s ease, filter .45s ease;
-  display:inline-block;
+  opacity:0; transform:translateY(10px); filter:blur(4px);
+  transition:opacity .75s ease, transform .75s ease, filter .75s ease;
 }
-#bv-bloom .word.show{
-  opacity:1; transform:translateY(0); filter:blur(0);
+#bv-bloom .word.show{ opacity:1; transform:translateY(0); filter:blur(0); }
+
+/* Nút vào */
+#bv-enter.bv-bloom-btn{
+  position:absolute; left:50%; top:calc(var(--y,50%) + 134px);
+  transform:translate(-50%,0);
+  background:#b48a60; color:#fff; border:0; border-radius:999px;
+  padding:10px 22px; font-weight:700; font-size:15px; cursor:pointer;
+  box-shadow:0 10px 22px rgba(180,138,96,.28);
+  opacity:0; transition:opacity .8s ease, transform .4s ease;
 }
+#bv-enter.show{ opacity:1; }
+#bv-enter:hover{ transform:translate(-50%,-1px); }
 </style>
 </head>
 <body>
-<!-- BAVATU intro overlay -->
+<!-- === BAVATU Opening (ripple) === -->
 <div id="bv-bloom" aria-hidden="true">
-  <div class="bv-words" aria-live="polite" aria-label="Xin bạn một nhịp thở">
-  <span class="word" data-step="1">Xin</span>
-  <span class="word" data-step="2">bạn</span>
-  <span class="word" data-step="3">một</span>
-  <span class="word" data-step="4">nhịp</span>
-  <span class="word" data-step="5">thở</span>
-</div>
-    <button id="bv-enter" class="bv-bloom-btn">Vào không gian</button>
+  <!-- Âm của giọt nước -->
+  <audio id="bv-drop" src="bavatu-drop.mp3" preload="auto" playsinline></audio>
+
+  <!-- Vùng ripple (giọt rơi + gợn loang) -->
+  <div id="bv-ripple" aria-hidden="true">
+    <div class="dot"></div>
+    <div class="ring r1"></div>
+    <div class="ring r2"></div>
+    <div class="ring r3"></div>
   </div>
 
-  <!-- audio must be in DOM for Safari; keep preload="auto" -->
-  <audio id="bv-drop" preload="auto" playsinline>
-  <source src="bavatu-drop.mp3?v=3" type="audio/mpeg">
-</audio>
-</div>
-
-  <!-- Header -->
-  <header>
-  <div class="container nav">
-    <div class="brand"><img src="favicon.webp" alt="BAVATU" style="height:22px"> BAVATU</div>
-    <button class="menu-toggle" aria-label="Menu">☰</button>
-    <nav>
-      <a href="#why">Why BAVATU</a>
-      <a href="#menu">Menu</a>
-      <a href="#book">Booking</a>
-      <a href="#contact">Contact</a>
-      <a class="cta" href="https://calendar.app.google/5YScKPWWB1q9cDC69" target="_blank" rel="noopener">Book Now</a>
-    </nav>
+  <!-- Cụm chữ xuất hiện ngay tại điểm rơi -->
+  <div class="bv-words">
+    <span class="word">Xin</span>
+    <span class="word">bạn</span>
+    <span class="word">một</span>
+    <span class="word">nhịp</span>
+    <span class="word">thở</span>
   </div>
+
+  <button id="bv-enter" class="bv-bloom-btn" type="button">Vào không gian</button>
+</div>
 </header>
 
   <!-- ===== HERO BAVATU — VIETNAMESE-SAFE FONTS ===== -->
@@ -869,76 +927,61 @@ Không một cái Chạm nào là vô nghĩa – mỗi chuyển động đều m
   }
 </script>
 <script>
-(() => {
-  const overlay = document.getElementById('bv-bloom');
-  const btn = document.getElementById('bv-enter');
-  const audio = document.getElementById('bv-drop');
-  const words = [...document.querySelectorAll('#bv-bloom .word')];
+(function(){
+  const bloom  = document.getElementById('bv-bloom');
+  const ripple = document.getElementById('bv-ripple');
+  const enter  = document.getElementById('bv-enter');
+  const words  = [...document.querySelectorAll('#bv-bloom .word')];
+  const drop   = document.getElementById('bv-drop');
 
-  const html = document.documentElement;
-  const prevOverflow = html.style.overflow;
-  const SEEN_KEY = 'bvSeenIntro_v3';
-  const forced = new URLSearchParams(location.search).get('intro') === '1';
+  // === 1) Điểm rơi (giữa màn hình; nếu muốn theo click, xem chú thích bên dưới) ===
+  const cx = Math.round(window.innerWidth  * 0.5);
+  const cy = Math.round(window.innerHeight * 0.48);
+  bloom.style.setProperty('--x', cx + 'px');
+  bloom.style.setProperty('--y', cy + 'px');
 
-  if (!forced && localStorage.getItem(SEEN_KEY) === '1') {
-    overlay?.remove(); return;
-  }
-  html.style.overflow = 'hidden';
-
-  function closeOverlay(){
-    if(!overlay) return;
-    overlay.classList.add('leaving');
-    overlay.style.pointerEvents = 'none';
-    const cleanup = () => {
-      overlay.removeEventListener('transitionend', cleanup);
-      overlay.remove(); html.style.overflow = prevOverflow || '';
-    };
-    overlay.addEventListener('transitionend', cleanup);
-    setTimeout(cleanup, 1200);
-  }
-
-  // --- phiên bản 5 giọt = 5 chữ ---
-  function playDrop(){
-    try{
-      if(audio){
-        audio.currentTime = 0;
-        audio.muted = false; audio.volume = 1;
-        audio.play().catch(()=>{});
-      }
-    }catch(e){}
-  }
-
-  function proceed(){
-    // Lần lượt hiện từng chữ theo nhịp drop
-    let i = 0;
-    const STEP = 420; // ms giữa các giọt (có thể 380–480 tuỳ anh thích)
-    function tick(){
-      if (i < words.length){
-        words[i].classList.add('show');  // lộ chữ
-        playDrop();                       // phát giọt
-        i++;
-        setTimeout(tick, STEP);
-      }else{
-        // đợi nhịp nhỏ rồi đóng
-        setTimeout(() => {
-          localStorage.setItem(SEEN_KEY,'1');
-          closeOverlay();
-        }, 600);
-      }
-    }
-    tick();
-  }
-
-  btn?.addEventListener('click', (e)=>{ e.preventDefault(); proceed(); }, {once:true});
-  overlay?.addEventListener('keydown', (e)=>{
-    if(e.key==='Enter' || e.key===' '){ e.preventDefault(); proceed(); }
+  // === 2) Chạy hiệu ứng sau khi trang tải ===
+  window.addEventListener('load', () => {
+    // nhỏ ngắt quãng để màn hình kịp “thở vào” rồi mới rơi
+    setTimeout(startSequence, 700);
   });
-  overlay?.addEventListener('click', (e)=>{
-    const isBtn = (e.target === btn || btn?.contains(e.target));
-    if(!isBtn) proceed();
-  }, {once:true});
 
-  window.addEventListener('load', ()=>{ try{ audio?.load(); }catch(e){} });
+  async function startSequence(){
+    // Cố phát âm thanh; nếu bị chặn (Safari/iOS), chờ chạm
+    try { await drop.play(); }
+    catch(e){
+      const unlock = () => { drop.play().catch(()=>{}); window.removeEventListener('pointerdown', unlock); };
+      window.addEventListener('pointerdown', unlock, { once:true });
+    }
+
+    // Bắt đầu ripple
+    bloom.classList.add('play');
+
+    // Hiện từng chữ theo nhịp loang
+    const t0 = 1200;      // ms sau khi bắt đầu
+    const step = 650;     // khoảng cách giữa từng chữ
+    words.forEach((w,i)=> setTimeout(()=> w.classList.add('show'), t0 + i*step));
+
+    // Hiện nút sau khi chữ xong  ~ 1200 + 4*650 + buffer
+    setTimeout(()=> enter.classList.add('show'), t0 + (words.length-1)*step + 900);
+  }
+
+  // === 3) Rời overlay ===
+  enter.addEventListener('click', () => {
+    bloom.classList.add('leaving');
+    setTimeout(()=> bloom.remove(), 900);
+  });
+
+  /* 
+    Nếu anh muốn giọt rơi theo vị trí chạm lần đầu:
+    window.addEventListener('pointerdown', (ev)=>{
+      if(bloom.dataset.locked) return;
+      bloom.dataset.locked = '1';
+      bloom.style.setProperty('--x', ev.clientX + 'px');
+      bloom.style.setProperty('--y', ev.clientY + 'px');
+      startSequence();
+    }, { once:true });
+  */
 })();
 </script>
 </body>
