@@ -427,113 +427,272 @@ footer.visible{                       /* JS sẽ gắn class này */
   font-family:"Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   margin-top:6px;
 }
-/* ===== BLOOM INTRO (overlay + ripple + words + button) ===== */
-body.bloom-lock{ overflow:hidden; }
-
-#bv-bloom{
+/* === Bloom overlay === */
+#bv_bloom{
   position:fixed; inset:0; z-index:9999;
   display:grid; place-items:center;
-  background:#1d120c; /* nâu ấm */
-  transition:opacity .8s ease, transform .8s ease;
-  overflow:hidden;
+  background:#1d120c;              /* nâu ấm nền */
+  opacity:0; pointer-events:none;
+  transition:opacity .6s ease;
+}
+#bv_bloom.on{ opacity:1; pointer-events:auto; }
+
+#bv_bloom.leaving{ opacity:0; pointer-events:none; }
+
+/* khung trong */
+#bv_bloom .bv-inner{
+  position:relative; width:min(720px, 92vw); height:min(420px, 62vh);
+  display:grid; place-items:center;
 }
 
-/* Ripple (làn nước lan) — bản rõ */
-#bv-bloom .bv-ripple{
-  position:absolute; inset:0; z-index:1; pointer-events:none;
-  background:
-    radial-gradient(circle at 50% 50%,
-      rgba(255,255,255,.28) 0%,
-      rgba(255,255,255,.12) 18%,
-      rgba(255,255,255,.06) 34%,
-      rgba(255,255,255,.03) 46%,
-      transparent 65%) center/0 0 no-repeat;
+/* sóng nước — nhìn rõ, lan ngang */
+#bv_bloom .bv-ripple{
+  position:absolute; inset:0; margin:auto; width:220px; height:220px;
+  border-radius:50%;
+  background:radial-gradient(ellipse at center,
+              rgba(255,255,255,.12) 0 2px,
+              rgba(255,255,255,.08) 2px 4px,
+              transparent 4px);
+  filter:blur(1px);
   opacity:0;
+  transform:scale(0.6,0.5);
 }
-@keyframes bvRipple {
-  0%   { background-size:0 0;         opacity:.00; }
-  14%  { background-size:110vmax 110vmax; opacity:.42; }
-  60%  { background-size:160vmax 160vmax; opacity:.20; }
-  100% { background-size:190vmax 190vmax; opacity:.00; }
+#bv_bloom.r1 .bv-ripple{
+  animation:ripple 1100ms ease-out forwards;
 }
-#bv-bloom.rippling .bv-ripple{ animation:bvRipple 1.8s ease-out forwards; }
+@keyframes ripple{
+  0%   { opacity:.0; transform:scale(0.6,.5); }
+  20%  { opacity:.55; }
+  100% { opacity:0;  transform:scale(6.5,2.2); } /* lan ngang 2 bên */
+}
 
-/* Words */
-#bv-bloom .bv-words{
-  position:relative; z-index:2;
-  display:flex; gap:.6ch; align-items:center; justify-content:center;
+/* chữ hiện theo giọt */
+#bv_bloom .bv-words{
+  display:flex; gap:.5ch; justify-content:center; align-items:center;
   color:#f6efe7; font-weight:700; letter-spacing:.02em;
-  font-size:clamp(20px, 3.2vw, 30px);
-  text-shadow:0 8px 30px rgba(0,0,0,.45);
+  font-family:"Be Vietnam Pro", system-ui,-apple-system, Segoe UI, Roboto, Arial;
+  font-size:clamp(20px,3.2vw,34px);
+  text-shadow:0 6px 18px rgba(0,0,0,.45);
+  margin-top:-8px;
 }
-#bv-bloom .word{
-  opacity:0; transform:translateY(10px); filter:blur(5px);
-  transition:opacity .5s ease, transform .5s ease, filter .5s ease;
+#bv_bloom .word{ 
+  opacity:0; transform:translateY(10px); filter:blur(3px);
+  transition:opacity .42s ease, transform .42s ease, filter .42s ease;
 }
-#bv-bloom .word.show{
+#bv_bloom .word.show{ 
   opacity:1; transform:translateY(0); filter:blur(0);
 }
 
-/* Button (xuất hiện muộn, dịu) */
-#bv-enter.bv-bloom-btn{
-  position:absolute; z-index:2; bottom:18vh;
-  padding:12px 20px; border:0; border-radius:999px;
-  background:linear-gradient(180deg,#e7b893,#cf956e);
-  color:#3b2a1e; font-weight:700;
-  box-shadow:0 10px 30px rgba(207,149,110,.35);
-  opacity:0; transform:translateY(12px) scale(.98);
+/* nút vào */
+.bv-bloom-btn{
+  position:absolute; left:50%; bottom:24px; transform:translateX(-50%);
+  background:linear-gradient(180deg,#edc7a3,#d7a678);
+  color:#2b221a; font-weight:700; border:0; border-radius:999px;
+  padding:12px 20px; box-shadow:0 10px 22px rgba(0,0,0,.32);
+  opacity:0; pointer-events:none; transition:opacity .6s ease, transform .6s ease;
+}
+#bv_bloom.btn-on .bv-bloom-btn{ opacity:1; pointer-events:auto; }
+
+/* nút bật âm (fallback) */
+.bv-sound{
+  position:absolute; right:16px; bottom:16px;
+  background:rgba(255,255,255,.12); color:#fff; border:1px solid rgba(255,255,255,.25);
+  border-radius:10px; padding:6px 10px; backdrop-filter:blur(6px);
+  font-size:13px;
+}
+
+/* khi overlay mở: khóa scroll body */
+html.bv-lock, body.bv-lock{ overflow:hidden; }
+/* Khóa trang đến khi intro xong (Bloom ưu tiên hiển thị) */
+body.is-intro > :not(#bv_bloom){ opacity:0; transition:opacity .6s ease; }
+body.intro-done  > :not(#bv_bloom){ opacity:1; }
+
+/* === Bloom overlay === */
+#bv_bloom{
+  position:fixed; inset:0; z-index:9999;
+  display:grid; place-items:center;
+  background:#1d120c;            /* nâu ấm */
+  opacity:1; pointer-events:auto; /* luôn hiện ngay từ đầu */
+}
+#bv_bloom.leaving{ opacity:0; pointer-events:none; transition:opacity .6s ease; }
+
+/* khung trong */
+#bv_bloom .bv-inner{
+  position:relative;
+  width:min(760px,92vw); height:min(460px,64vh);
+  display:grid; place-items:center;
+}
+
+/* SVG sóng elip lan ngang (rõ ràng, dời xuống dưới dòng chữ) */
+/* Căn giữa tuyệt đối, căn giữa dòng chữ */
+/* ===== Sóng mảnh, fade rộng toàn màn hình ===== */
+#bv_bloom .ripples {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  width: min(38vmin, 380px);   /* khởi điểm nhỏ hơn để nở tự nhiên hơn */
+  height: auto;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* Stroke mảnh, tách biệt – độ sáng giảm dần mỗi vòng */
+#bv_bloom .r1 circle { stroke: rgba(255,255,255,.35); stroke-width: 0.8; }
+#bv_bloom .r2 circle { stroke: rgba(255,255,255,.28); stroke-width: 0.7; }
+#bv_bloom .r3 circle { stroke: rgba(255,255,255,.22); stroke-width: 0.6; }
+
+/* Gốc animation */
+#bv_bloom .ripple {
+  fill: none;
+  opacity: 0;
+  transform-origin: 50% 50%;
+  animation: rippleSoft 2600ms cubic-bezier(.18,.6,.25,1) forwards;
+  animation-play-state: paused;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 3px 8px rgba(0,0,0,.25));
+}
+
+/* delay giữa các vòng cho tự nhiên */
+#bv_bloom .r2 { animation-delay: 0.25s; }
+#bv_bloom .r3 { animation-delay: 0.5s; }
+
+/* Khi thêm class .run => bắt đầu */
+#bv_bloom .ripples.run .ripple { animation-play-state: running; }
+
+/* Hiệu ứng nở – mảnh, mềm, fade-out rộng */
+@keyframes rippleSoft {
+  0%   { opacity: 0.85; transform: scale(0.2); }
+  50%  { opacity: 0.45; }
+  80%  { opacity: 0.15; }
+  100% { opacity: 0; transform: scale(11); }  /* scale lớn = phủ full màn hình */
+}
+
+/* chữ */
+#bv_bloom .bv-words{
+  display:flex; gap:.55ch; justify-content:center; align-items:center;
+  color:#f6efe7; font-weight:700; letter-spacing:.02em;
+  font-family:"Be Vietnam Pro", system-ui,-apple-system, Segoe UI, Roboto, Arial;
+  font-size:clamp(22px,3.4vw,36px);
+  text-shadow:0 6px 18px rgba(0,0,0,.45);
+  margin-top:-6px;
+}
+#bv_bloom .word{
+  opacity:0; transform:translateY(10px); filter:blur(3px);
+  transition:opacity .36s ease, transform .36s ease, filter .36s ease;
+}
+#bv_bloom .word.show{
+  opacity:1; transform:translateY(0); filter:blur(0);
+}
+
+/* nút vào */
+.bv-bloom-btn{
+  position:absolute; left:50%; bottom:26px; transform:translateX(-50%);
+  background:linear-gradient(180deg,#edc7a3,#d7a678);
+  color:#2b221a; font-weight:700; border:0; border-radius:999px;
+  padding:12px 20px; box-shadow:0 10px 22px rgba(0,0,0,.32);
+  opacity:0; pointer-events:none;
+  transition:opacity .7s ease, transform .7s ease;
+}
+#bv_bloom.btn-on .bv-bloom-btn{ opacity:1; pointer-events:auto; }
+
+/* nút bật âm (fallback Safari) */
+.bv-sound{
+  position:absolute; right:16px; bottom:16px;
+  background:rgba(255,255,255,.12); color:#fff;
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:10px; padding:6px 10px; backdrop-filter:blur(6px);
+  font-size:13px;
+}
+/* ===== Timing đồng bộ (CSS var) ===== */
+:root{ --introDur: 2400ms; } /* đổi 1800/2200/3000… để nhanh/chậm toàn cảnh */
+
+/* ===== Text mềm hơn ===== */
+#bv_bloom .bv-words{
+  font-family: "Be Vietnam Pro", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 500;                 /* ↓ mềm hơn */
+  letter-spacing: .02em;
+  color: #f6efe7;
+}
+#bv_bloom .word{ font-weight: 500; }
+
+/* ===== Ripples: hình tròn, căn giữa, nở 1 lần ===== */
+#bv_bloom .ripples{
+  position:absolute;
+  left:50%;
+  top:58%;                         /* đặt thấp hơn dòng chữ một chút */
+  transform:translate(-50%,-50%);  /* căn giữa tuyệt đối */
+  width:min(46vmin, 420px);        /* kích thước khởi điểm */
+  height:auto;
   pointer-events:none;
-  transition:opacity 1.2s ease, transform 1.2s ease, box-shadow .3s ease;
+  overflow:visible;
 }
-#bv-enter.show{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
-#bv-enter:hover{ box-shadow:0 14px 36px rgba(207,149,110,.45); }
-
-/* Rời overlay */
-#bv-bloom.leaving{ opacity:0; transform:scale(1.02); pointer-events:none; }
-
-/* Tôn trọng người dùng hạn chế chuyển động */
-@media (prefers-reduced-motion: reduce){
-  #bv-bloom .bv-ripple{ display:none; }
+#bv_bloom .ripples circle{
+  fill:none;
+  stroke-width:1.5;
 }
+/* sắc độ mỗi vòng khác nhau → nhìn “không dính” */
+#bv_bloom .r1 circle{ stroke:rgba(255,255,255,.45); }
+#bv_bloom .r2 circle{ stroke:rgba(255,255,255,.33); }
+#bv_bloom .r3 circle{ stroke:rgba(255,255,255,.24); }
 
-/* Button */
-#bv-enter.bv-bloom-btn{
-  position:absolute; z-index:2; bottom:18vh;
-  padding:12px 20px; border:0; border-radius:999px;
-  background:linear-gradient(180deg, #e7b893, #cf956e);
-  color:#3b2a1e; font-weight:700; box-shadow:0 8px 26px rgba(0,0,0,.25);
-  opacity:0; transform:translateY(10px) scale(.98); pointer-events:none;
-  transition:opacity .8s ease, transform .8s ease;
+#bv_bloom .ripple{
+  opacity:0;
+  transform-origin:50% 50%;
+  animation: ripple var(--introDur) cubic-bezier(.15,.5,.2,1) forwards; /* 1 lần */
+  animation-play-state: paused;    /* chờ JS bật */
+  filter: drop-shadow(0 2px 5px rgba(0,0,0,.35));
+  will-change: transform, opacity;
 }
-#bv-enter.show{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+/* lệch pha nhẹ để không “dính” nhau */
+#bv_bloom .r2{ animation-delay: calc(var(--introDur) * .14); }
+#bv_bloom .r3{ animation-delay: calc(var(--introDur) * .28); }
 
-/* Rời overlay */
-#bv-bloom.leaving{ opacity:0; transform:scale(1.02); pointer-events:none; }
+/* Khi thêm .run => bắt đầu */
+#bv_bloom .ripples.run .ripple{ animation-play-state: running; }
+
+/* Nở từ tâm → phủ fullscreen (7.6 ~ 9.0 tuỳ màn) rồi biến mất */
+@keyframes ripple{
+  0%   { opacity:.78; transform:scale(.18); }
+  60%  { opacity:.22; }
+  100% { opacity:0;   transform:scale(7.6); } /* tăng nếu chưa phủ hết → 8.2 / 9 */
+}
 </style>
 </head>
 <body>
-<!-- ===== BAVATU Bloom Intro ===== -->
-<div id="bv-bloom" aria-hidden="true">
-  <!-- Sóng nước -->
-  <div class="bv-ripple" aria-hidden="true"></div>
+<script>document.body.classList.add('is-intro');</script>
+<!-- === BAVATU • Bloom intro (overlay) === -->
+<div id="bv_bloom" aria-hidden="true">
+  <div class="bv-inner">
+    <!-- Ripples: hình tròn, nở từ tâm -->
+<svg class="ripples" viewBox="0 0 100 100" aria-hidden="true">
+  <g class="ripple r1"><circle cx="50" cy="50" r="8"/></g>
+  <g class="ripple r2"><circle cx="50" cy="50" r="8"/></g>
+  <g class="ripple r3"><circle cx="50" cy="50" r="8"/></g>
+</svg>
 
-  <!-- Cụm chữ -->
-  <div class="bv-words" aria-live="polite" aria-label="Xin bạn một nhịp thở">
-    <span class="word">Hít</span>
-    <span class="word">thở</span>
-    <span class="word">ra</span>
-    <span class="word">một</span>
-    <span class="word">nhịp</span>
+    <!-- chữ theo từng “giọt” -->
+    <div class="bv-words" aria-live="polite" aria-label="Luôn quán sát hơi thở">
+      <span class="word" data-step="1">Luôn</span>
+      <span class="word" data-step="2">quán</span>
+      <span class="word" data-step="3">sát</span>
+      <span class="word" data-step="4">hơi</span>
+      <span class="word" data-step="5">thở</span>
+    </div>
+
+    <!-- nút vào (vẫn có, nhưng intro vẫn auto) -->
+    
+
+    <!-- âm thanh giọt -->
+    <audio id="bv-drop" preload="auto" playsinline>
+      <source src="bavatu-drop.mp3?v=5" type="audio/mpeg">
+    </audio>
+
+    <!-- fallback bật âm nếu Safari chặn -->
+    <button id="bv-sound" class="bv-sound" hidden type="button">Bật âm</button>
   </div>
-
-  <!-- Nút vào -->
-  <button id="bv-enter" class="bv-bloom-btn" type="button">Vào không gian</button>
-
-  <!-- Âm giọt nước (cần playsinline cho Safari) -->
-  <audio id="bv-drop" preload="auto" playsinline>
-    <source src="bavatu-drop.mp3?v=7" type="audio/mpeg">
-  </audio>
 </div>
+<!-- === /Bloom intro === -->
 </header>
 
   <!-- ===== HERO BAVATU — VIETNAMESE-SAFE FONTS ===== -->
@@ -907,70 +1066,72 @@ Không một cái Chạm nào là vô nghĩa – mỗi chuyển động đều m
   }
 </script>
 <script>
-(function(){
-  const root = document.getElementById('bv-bloom');
-  if(!root) return;
+(()=>{
+  const body     = document.body;
+  const bloom    = document.getElementById('bv_bloom');
+  const words    = Array.from(bloom.querySelectorAll('.word'));
+  const soundBtn = document.getElementById('bv-sound');
+  const audioEl  = document.getElementById('bv-drop');
 
-  const words   = [...root.querySelectorAll('.word')];
-  const enterBtn= document.getElementById('bv-enter');
-  const audioEl = document.getElementById('bv-drop');
+  // Nhịp hiển thị chữ + auto vào trang
+  const START_DELAY   = 350;   // chờ trước khi hiện chữ
+  const WORD_DELAY    = 380;   // mỗi chữ cách nhau 0.38s
+  const AUTO_CLOSE_MS = 5000;  // tự vào trang sau 5s
 
-  // ===== Tempo theo ý anh =====
-  const WORD_START       = 400;  // bắt đầu sau khi tap 0.4s
-  const STEP             = 650;  // 0.65s mỗi chữ -> dễ đọc, chậm rãi
-  const AFTER_TEXT_DELAY = 1400; // nút xuất hiện muộn, dịu
-  const VOLUME           = 1.0;  // âm lượng giọt nước
+  function showWords(){
+    setTimeout(()=>{
+      words.forEach((w,i)=> setTimeout(()=> w.classList.add('show'), i*WORD_DELAY));
+    }, START_DELAY);
+  }
 
-  let started = false;
-
-  // Khoá scroll khi overlay đang mở
-  document.body.classList.add('bloom-lock');
-
-  // Bắt gesture đầu tiên để phát âm (bắt buộc trên Safari/iOS)
-  const begin = () => {
-    if (started) return;
-    started = true;
-
-    // Ripple ngay lập tức
-    root.classList.add('rippling');
-    setTimeout(()=> root.classList.remove('rippling'), 1900);
-
-    // Phát âm (nếu vẫn bị chặn, cứ chạy chữ – âm không phải bắt buộc)
-    if (audioEl){
-      try {
-        audioEl.volume = VOLUME;
-        audioEl.currentTime = 0;
-        audioEl.play().catch(()=>{ /* im lặng nếu bị chặn */ });
-      } catch(e){}
-    }
-
-    // Hiện chữ tuần tự
-    words.forEach((w,i)=> {
-      setTimeout(()=> w.classList.add('show'), WORD_START + i*STEP);
+  function playDropSafe(){
+    if(!audioEl) return;
+    audioEl.volume = 0.95;
+    audioEl.currentTime = 0;
+    // cố gắng phát (Chrome/Edge)
+    audioEl.play().catch(()=> {
+      // nếu bị chặn (Safari/iOS) -> hiện nút bật âm
+      soundBtn.hidden = false;
     });
+    // retry nhẹ cho Safari
+    setTimeout(()=> audioEl.play().catch(()=>{}), 600);
+  }
 
-    // Hiện nút sau chữ cuối + delay
-    const total = WORD_START + (words.length - 1)*STEP + AFTER_TEXT_DELAY;
-    setTimeout(()=> enterBtn.classList.add('show'), total);
+  function startIntro(){
+    // Bật ripple 1 lần (đúng selector .ripples)
+    const ripples = document.querySelector('#bv_bloom .ripples');
+    if (ripples) ripples.classList.add('run');
 
-    // Fallback: nếu vì lý do gì đó chưa hiện nút → ép hiện sau 7s
-    setTimeout(()=> enterBtn.classList.add('show'), 7000);
-  };
+    playDropSafe();
+    showWords();
 
-  // Tap/Click ở bất kỳ đâu trên overlay để bắt đầu (đảm bảo phát âm trên iOS)
-  root.addEventListener('pointerdown', begin, { once:true });
-  root.addEventListener('touchstart', begin, { once:true });
-  root.addEventListener('click', begin, { once:true });
+    // Auto đóng sau 5 giây
+    setTimeout(closeIntro, AUTO_CLOSE_MS);
+  }
 
-  // Nhấn nút để rời overlay
-  enterBtn.addEventListener('click', ()=>{
-    root.classList.add('leaving');
-    document.body.classList.remove('bloom-lock');
-    setTimeout(()=> root.remove(), 850);
+  function closeIntro(){
+    if (!bloom) return;
+    bloom.classList.add('leaving');
+    setTimeout(()=>{
+      bloom.remove();
+      body.classList.remove('is-intro');
+      body.classList.add('intro-done');
+    }, 600);
+  }
+
+  // Fallback bật âm nếu bị chặn
+  soundBtn.addEventListener('click', ()=>{
+    soundBtn.hidden = true;
+    playDropSafe();
   });
 
-  // (Tuỳ chọn) Nếu anh muốn auto-bắt đầu trên desktop:
-  // setTimeout(()=> { if (!started) begin(); }, 800);
+  // iOS: lần chạm đầu bật audio
+  window.addEventListener('pointerdown', ()=> {
+    if (audioEl && audioEl.paused) playDropSafe();
+  }, { once:true });
+
+  // Bắt đầu intro khi DOM sẵn sàng
+  document.addEventListener('DOMContentLoaded', startIntro);
 })();
 </script>
 </body>
