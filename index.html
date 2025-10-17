@@ -657,7 +657,7 @@ body.intro-done  > :not(#bv_bloom){opacity:1;}
       <span class="word">thở</span>
     </div>
 
-    <button id="bv-enter" type="button">VÀO KHÔNG GIAN</button>
+    <button id="bv-enter" class="bv-bloom-btn">VÀO KHÔNG GIAN</button>
 
     <audio id="bv-drop" preload="auto" playsinline>
       <source src="bavatu-drop.mp3" type="audio/mpeg">
@@ -1038,64 +1038,86 @@ Không một cái Chạm nào là vô nghĩa – mỗi chuyển động đều m
   }
 </script>
 <script>
-(()=> {
-  document.body.classList.add('is-intro');
+(() => {
+  // ===== Tham số nhịp/timing (có thể chỉnh) =====
+  const GAP         = 520;  // nhịp giữa các từ
+  const EXTRA_PAUSE = 260;  // nghỉ thêm giữa “Luôn” → “quán”
+  const BTN_DELAY   = 400;  // trễ trước khi hiện nút sau khi chữ xong
 
+  // ===== Lấy phần tử =====
   const bloom   = document.getElementById('bv_bloom');
-  const ripples = bloom.querySelector('.ripples');
-  const words   = [...bloom.querySelectorAll('.word')];
+  const ripples = document.querySelector('#bv_bloom .ripples');
+  const words   = [...document.querySelectorAll('#bv_bloom .bv-words .word')];
   const btn     = document.getElementById('bv-enter');
   const audioEl = document.getElementById('bv-drop');
 
-  const GAP = 520;                     // nhịp chuẩn
-  const EXTRA_PAUSE = 260;             // thêm khoảng nghỉ giữa "Luôn" -> "quán"
-  const BTN_DELAY = 400;               // trễ nhỏ trước khi hiện nút
+  // Nếu thiếu markup thì dừng sớm để không lỗi trắng màn
+  if (!bloom || !btn || !audioEl || words.length === 0) {
+    console.warn('[Bloom] Thiếu phần tử cần thiết.');
+    return;
+  }
 
-  function start(){
-    ripples.classList.add('run');
+  // ===== Hiển chữ + chạy sóng =====
+  function start() {
+    // bật sóng ngay
+    ripples?.classList.add('run');
 
-    // Hiện chữ theo đúng thứ tự, thêm nghỉ giữa “Luôn” và “quán”
+    // chữ rơi theo nhịp, có nghỉ giữa “Luôn” và “quán”
     words.forEach((w, i) => {
-      const base = i * GAP;
-      const delay = (i >= 1) ? base + EXTRA_PAUSE : base;
-      setTimeout(()=> w.classList.add('show'), delay);
+      const base  = i * GAP;
+      const delay = (i === 1) ? base + EXTRA_PAUSE : base;
+      setTimeout(() => w.classList.add('show'), delay);
     });
 
-    // Nút hiện sau khi chữ cuối xong
+    // sau khi chữ xong → hiện nút "Vào không gian"
     const total = (words.length - 1) * GAP + EXTRA_PAUSE + BTN_DELAY + GAP;
-    setTimeout(()=> btn.classList.add('show'), total);
+    setTimeout(() => bloom.classList.add('btn-on'), total);
   }
 
-  // Rời Bloom (bỏ overlay, hiện trang chính)
-  function leave(){
+  // ===== Rời overlay vào trang chính =====
+  function leave() {
     if (bloom.classList.contains('leaving')) return;
     bloom.classList.add('leaving');
-    document.body.classList.remove('is-intro');
     document.body.classList.add('intro-done');
-    setTimeout(()=> bloom.remove(), 600);
+    setTimeout(() => bloom.remove(), 450); // thời gian fade-out
   }
 
-  // Click = chắc chắn có âm + vẫn rời trang
+  // ===== Click nút: phát âm + điều kiện rời trang =====
   btn.addEventListener('click', async () => {
     try {
       audioEl.currentTime = 0;
       audioEl.volume = 0.9;
-      // Phát nhờ user gesture — Safari/Chrome đều OK
+
+      // Rời trang khi âm thanh phát tới 60%
+      audioEl.ontimeupdate = () => {
+        if (audioEl.duration && audioEl.currentTime >= audioEl.duration * 0.4) {
+          audioEl.ontimeupdate = null;
+          leave();
+        }
+      };
+
+      // Phát âm (cần user gesture)
       const playPromise = audioEl.play();
-      // Rời sau tiếng *hoặc* sau 3.2s bảo hiểm
-      let left = false;
-      const safe = setTimeout(()=> { if(!left){ left=true; leave(); } }, 3200);
-      audioEl.addEventListener('ended', () => { if(!left){ left=true; clearTimeout(safe); leave(); } }, { once: true });
-      await playPromise; // tránh Uncaught
-    } catch(e) {
-      // Nếu không phát được (chặn quyền), vẫn rời mượt
+
+      // Phương án dự phòng: 3.2s vẫn rời để khỏi "đứng"
+      const safe = setTimeout(() => { audioEl.ontimeupdate = null; leave(); }, 1000);
+
+      // hoặc khi âm thanh kết thúc thì rời
+      audioEl.addEventListener('ended', () => { clearTimeout(safe); leave(); }, { once: true });
+
+      await playPromise; // nếu bị chặn sẽ nhảy xuống catch
+    } catch {
+      // Không phát được (Safari/Quyền bị chặn) → vẫn rời mượt
       leave();
     }
   });
 
-  (document.readyState === 'loading')
-    ? document.addEventListener('DOMContentLoaded', start)
-    : start();
+  // ===== Khởi động khi DOM sẵn sàng =====
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
 })();
 </script>
 </body>
