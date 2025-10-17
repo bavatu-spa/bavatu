@@ -427,68 +427,112 @@ footer.visible{                       /* JS sẽ gắn class này */
   font-family:"Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   margin-top:6px;
 }
-/* Overlay */
+/* ===== BLOOM INTRO (overlay + ripple + words + button) ===== */
+body.bloom-lock{ overflow:hidden; }
+
 #bv-bloom{
   position:fixed; inset:0; z-index:9999;
-  background:#1a0f0a;
-  display:flex; align-items:center; justify-content:center;
-  opacity:1; transform:scale(1);
+  display:grid; place-items:center;
+  background:#1d120c; /* nâu ấm */
   transition:opacity .8s ease, transform .8s ease;
+  overflow:hidden;
 }
 
-/* Khi rời overlay */
-#bv-bloom.leaving{
-  opacity:0; transform:scale(1.02);
-  pointer-events:none;
+/* Ripple (làn nước lan) — bản rõ */
+#bv-bloom .bv-ripple{
+  position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 50%,
+      rgba(255,255,255,.28) 0%,
+      rgba(255,255,255,.12) 18%,
+      rgba(255,255,255,.06) 34%,
+      rgba(255,255,255,.03) 46%,
+      transparent 65%) center/0 0 no-repeat;
+  opacity:0;
 }
+@keyframes bvRipple {
+  0%   { background-size:0 0;         opacity:.00; }
+  14%  { background-size:110vmax 110vmax; opacity:.42; }
+  60%  { background-size:160vmax 160vmax; opacity:.20; }
+  100% { background-size:190vmax 190vmax; opacity:.00; }
+}
+#bv-bloom.rippling .bv-ripple{ animation:bvRipple 1.8s ease-out forwards; }
 
-/* Dòng chữ từng chữ */
+/* Words */
 #bv-bloom .bv-words{
-  display:flex; gap:.5ch; justify-content:center; align-items:center;
-  color:#f6efe7; font-weight:600; letter-spacing:.02em;
-  margin-bottom:18px;
-  font-size:clamp(18px, 2.4vw, 28px); /* to hơn, responsive */
+  position:relative; z-index:2;
+  display:flex; gap:.6ch; align-items:center; justify-content:center;
+  color:#f6efe7; font-weight:700; letter-spacing:.02em;
+  font-size:clamp(20px, 3.2vw, 30px);
+  text-shadow:0 8px 30px rgba(0,0,0,.45);
 }
-#bv-bloom .word{ 
-  opacity:0; transform:translateY(8px); filter:blur(4px);
-  transition:opacity .45s ease, transform .45s ease, filter .45s ease;
+#bv-bloom .word{
+  opacity:0; transform:translateY(10px); filter:blur(5px);
+  transition:opacity .5s ease, transform .5s ease, filter .5s ease;
 }
-#bv-bloom .word.show{ 
+#bv-bloom .word.show{
   opacity:1; transform:translateY(0); filter:blur(0);
 }
 
-/* Nút “Vào không gian” – fade-in chậm, dịu */
+/* Button (xuất hiện muộn, dịu) */
 #bv-enter.bv-bloom-btn{
-  position:relative; left:50%; transform:translateX(-50%) translateY(6px) scale(.96);
-  opacity:0;
-  background:#d6a077; color:#2b221a; border:none; border-radius:999px;
-  padding:12px 18px; font-weight:700; cursor:pointer;
-  box-shadow:0 8px 28px rgba(214,160,119,.3);
-  transition:opacity 1.6s ease, transform 1.6s ease, box-shadow .3s ease;
+  position:absolute; z-index:2; bottom:18vh;
+  padding:12px 20px; border:0; border-radius:999px;
+  background:linear-gradient(180deg,#e7b893,#cf956e);
+  color:#3b2a1e; font-weight:700;
+  box-shadow:0 10px 30px rgba(207,149,110,.35);
+  opacity:0; transform:translateY(12px) scale(.98);
+  pointer-events:none;
+  transition:opacity 1.2s ease, transform 1.2s ease, box-shadow .3s ease;
 }
-#bv-enter.show{ opacity:1; transform:translateX(-50%) translateY(0) scale(1); }
-#bv-enter:hover{ box-shadow:0 10px 34px rgba(214,160,119,.38); }
+#bv-enter.show{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+#bv-enter:hover{ box-shadow:0 14px 36px rgba(207,149,110,.45); }
+
+/* Rời overlay */
+#bv-bloom.leaving{ opacity:0; transform:scale(1.02); pointer-events:none; }
+
+/* Tôn trọng người dùng hạn chế chuyển động */
+@media (prefers-reduced-motion: reduce){
+  #bv-bloom .bv-ripple{ display:none; }
+}
+
+/* Button */
+#bv-enter.bv-bloom-btn{
+  position:absolute; z-index:2; bottom:18vh;
+  padding:12px 20px; border:0; border-radius:999px;
+  background:linear-gradient(180deg, #e7b893, #cf956e);
+  color:#3b2a1e; font-weight:700; box-shadow:0 8px 26px rgba(0,0,0,.25);
+  opacity:0; transform:translateY(10px) scale(.98); pointer-events:none;
+  transition:opacity .8s ease, transform .8s ease;
+}
+#bv-enter.show{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+
+/* Rời overlay */
+#bv-bloom.leaving{ opacity:0; transform:scale(1.02); pointer-events:none; }
 </style>
 </head>
 <body>
-<!-- BAVATU intro overlay -->
+<!-- ===== BAVATU Bloom Intro ===== -->
 <div id="bv-bloom" aria-hidden="true">
+  <!-- Sóng nước -->
+  <div class="bv-ripple" aria-hidden="true"></div>
+
+  <!-- Cụm chữ -->
   <div class="bv-words" aria-live="polite" aria-label="Xin bạn một nhịp thở">
-    <span class="word" data-step="1">Xin</span>
-    <span class="word" data-step="2">bạn</span>
-    <span class="word" data-step="3">một</span>
-    <span class="word" data-step="4">nhịp</span>
-    <span class="word" data-step="5">thở</span>
+    <span class="word">Hít</span>
+    <span class="word">thở</span>
+    <span class="word">ra</span>
+    <span class="word">một</span>
+    <span class="word">nhịp</span>
   </div>
-  <button id="bv-enter" class="bv-bloom-btn">Vào không gian</button>
 
-  <!-- audio phải nằm trong DOM để Safari cho play -->
-  <audio id="bv-drop" preload="auto" playsinline>
-    <source src="bavatu-drop.mp3?v=4" type="audio/mpeg">
-  </audio>
-</div>
-
+  <!-- Nút vào -->
   <button id="bv-enter" class="bv-bloom-btn" type="button">Vào không gian</button>
+
+  <!-- Âm giọt nước (cần playsinline cho Safari) -->
+  <audio id="bv-drop" preload="auto" playsinline>
+    <source src="bavatu-drop.mp3?v=7" type="audio/mpeg">
+  </audio>
 </div>
 </header>
 
@@ -864,60 +908,69 @@ Không một cái Chạm nào là vô nghĩa – mỗi chuyển động đều m
 </script>
 <script>
 (function(){
-  // ---- Lấy phần tử
-  const bloom = document.getElementById('bv-bloom');
-  if(!bloom) return;                       // Không có overlay thì bỏ qua
-  const words = [...bloom.querySelectorAll('.word')];
-  const enterBtn = document.getElementById('bv-enter');
-  const drop = document.getElementById('bv-drop'); // <audio id="bv-drop">
+  const root = document.getElementById('bv-bloom');
+  if(!root) return;
 
-  // ---- Hiển thị từng chữ nhanh hơn (0.5s/ chữ), sau đó mới hiện nút
-  const WORD_START = 1200;   // bắt đầu hiện chữ
-  const STEP = 500;          // mỗi chữ cách nhau 0.5s
-  const AFTER_TEXT_DELAY = 800; // chờ thêm trước khi hiện nút
+  const words   = [...root.querySelectorAll('.word')];
+  const enterBtn= document.getElementById('bv-enter');
+  const audioEl = document.getElementById('bv-drop');
 
-  // Phát âm + chạy chữ (có fallback Safari/Chrome)
-  function startSequence(){
-    try {
-      drop && (drop.currentTime = 0);
-      drop && drop.play().catch(()=>{ /* im lặng nếu chặn autoplay */ });
-    } catch(e){ /* ignore */ }
+  // ===== Tempo theo ý anh =====
+  const WORD_START       = 400;  // bắt đầu sau khi tap 0.4s
+  const STEP             = 650;  // 0.65s mỗi chữ -> dễ đọc, chậm rãi
+  const AFTER_TEXT_DELAY = 1400; // nút xuất hiện muộn, dịu
+  const VOLUME           = 1.0;  // âm lượng giọt nước
 
+  let started = false;
+
+  // Khoá scroll khi overlay đang mở
+  document.body.classList.add('bloom-lock');
+
+  // Bắt gesture đầu tiên để phát âm (bắt buộc trên Safari/iOS)
+  const begin = () => {
+    if (started) return;
+    started = true;
+
+    // Ripple ngay lập tức
+    root.classList.add('rippling');
+    setTimeout(()=> root.classList.remove('rippling'), 1900);
+
+    // Phát âm (nếu vẫn bị chặn, cứ chạy chữ – âm không phải bắt buộc)
+    if (audioEl){
+      try {
+        audioEl.volume = VOLUME;
+        audioEl.currentTime = 0;
+        audioEl.play().catch(()=>{ /* im lặng nếu bị chặn */ });
+      } catch(e){}
+    }
+
+    // Hiện chữ tuần tự
     words.forEach((w,i)=> {
       setTimeout(()=> w.classList.add('show'), WORD_START + i*STEP);
     });
 
-    const total = WORD_START + (words.length - 1) * STEP + AFTER_TEXT_DELAY;
+    // Hiện nút sau chữ cuối + delay
+    const total = WORD_START + (words.length - 1)*STEP + AFTER_TEXT_DELAY;
     setTimeout(()=> enterBtn.classList.add('show'), total);
-  }
 
-  // Vào trang: ẩn overlay, mở scroll, lưu trạng thái nếu muốn
-  function leaveBloom(){
-    bloom.classList.add('leaving');
+    // Fallback: nếu vì lý do gì đó chưa hiện nút → ép hiện sau 7s
+    setTimeout(()=> enterBtn.classList.add('show'), 7000);
+  };
+
+  // Tap/Click ở bất kỳ đâu trên overlay để bắt đầu (đảm bảo phát âm trên iOS)
+  root.addEventListener('pointerdown', begin, { once:true });
+  root.addEventListener('touchstart', begin, { once:true });
+  root.addEventListener('click', begin, { once:true });
+
+  // Nhấn nút để rời overlay
+  enterBtn.addEventListener('click', ()=>{
+    root.classList.add('leaving');
     document.body.classList.remove('bloom-lock');
-    // không phụ thuộc transitionend (đảm bảo ẩn sau 850ms)
-    setTimeout(()=> { bloom.remove(); }, 850);
-  }
-
-  // Bắt click chắc chắn (kể cả click icon bên trong)
-  bloom.addEventListener('click', (e)=>{
-    if(e.target.closest('#bv-enter')) leaveBloom();
+    setTimeout(()=> root.remove(), 850);
   });
 
-  // Khóa scroll khi overlay hiển thị
-  document.body.classList.add('bloom-lock');
-  const style = document.createElement('style');
-  style.textContent = 'body.bloom-lock{overflow:hidden}';
-  document.head.appendChild(style);
-
-  // Khởi động
-  startSequence();
-
-  // --- Fallback: nếu vì lý do gì đó nút chưa hiện, ép hiện sau 5s
-  setTimeout(()=> enterBtn.classList.add('show'), 5000);
-
-  // --- Cho dev: muốn luôn thấy Bloom mỗi lần reload:
-  // (Đừng dùng localStorage để skip nữa – trước đó anh bị "chỉ thấy 1 lần")
+  // (Tuỳ chọn) Nếu anh muốn auto-bắt đầu trên desktop:
+  // setTimeout(()=> { if (!started) begin(); }, 800);
 })();
 </script>
 </body>
