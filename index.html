@@ -518,12 +518,14 @@ footer.visible{                       /* JS sẽ gắn class này */
 
 /* Nút vào */
 #bv-enter.bv-bloom-btn{
-  position:absolute; left:50%; top:calc(var(--y,50%) + 134px);
-  transform:translate(-50%,0);
-  background:#b48a60; color:#fff; border:0; border-radius:999px;
-  padding:10px 22px; font-weight:700; font-size:15px; cursor:pointer;
-  box-shadow:0 10px 22px rgba(180,138,96,.28);
-  opacity:0; transition:opacity .8s ease, transform .4s ease;
+  ...
+  opacity:0;
+  transform:translate(-50%,6px) scale(.96);
+  transition:opacity 1.6s ease, transform 1.6s ease;
+}
+#bv-enter.show{
+  opacity:1;
+  transform:translate(-50%,0) scale(1);
 }
 #bv-enter.show{ opacity:1; }
 #bv-enter:hover{ transform:translate(-50%,-1px); }
@@ -947,40 +949,22 @@ Không một cái Chạm nào là vô nghĩa – mỗi chuyển động đều m
   });
 
   async function startSequence(){
-    // Cố phát âm thanh; nếu bị chặn (Safari/iOS), chờ chạm
-    try { await drop.play(); }
-    catch(e){
-      const unlock = () => { drop.play().catch(()=>{}); window.removeEventListener('pointerdown', unlock); };
-      window.addEventListener('pointerdown', unlock, { once:true });
-    }
-
-    // Bắt đầu ripple
-    bloom.classList.add('play');
-
-    // Hiện từng chữ theo nhịp loang
-    const t0 = 1200;      // ms sau khi bắt đầu
-    const step = 650;     // khoảng cách giữa từng chữ
-    words.forEach((w,i)=> setTimeout(()=> w.classList.add('show'), t0 + i*step));
-
-    // Hiện nút sau khi chữ xong  ~ 1200 + 4*650 + buffer
-    setTimeout(()=> enter.classList.add('show'), t0 + (words.length-1)*step + 900);
+  try { await drop.play(); }
+  catch(e){
+    const unlock = () => { drop.play().catch(()=>{}); window.removeEventListener('pointerdown', unlock); };
+    window.addEventListener('pointerdown', unlock, { once:true });
   }
 
-  // === 3) Rời overlay ===
-  enter.addEventListener('click', () => {
-    bloom.classList.add('leaving');
-    setTimeout(()=> bloom.remove(), 900);
-  });
+  bloom.classList.add('play');
 
-  /* 
-    Nếu anh muốn giọt rơi theo vị trí chạm lần đầu:
-    window.addEventListener('pointerdown', (ev)=>{
-      if(bloom.dataset.locked) return;
-      bloom.dataset.locked = '1';
-      bloom.style.setProperty('--x', ev.clientX + 'px');
-      bloom.style.setProperty('--y', ev.clientY + 'px');
-      startSequence();
-    }, { once:true });
+  const t0 = 1200;      // bắt đầu hiện chữ
+  const step = 500;     // mỗi chữ cách nhau 0.5s
+  words.forEach((w,i)=> setTimeout(()=> w.classList.add('show'), t0 + i*step));
+
+  // Nút hiện chậm, sau chữ cuối cùng + 800ms
+  const totalTime = t0 + (words.length - 1) * step + 800;
+  setTimeout(()=> enter.classList.add('show'), totalTime);
+}
   */
 })();
 </script>
