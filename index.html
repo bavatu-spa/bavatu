@@ -4,7 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>BAVATU | Home Spa</title>
-
+  <!-- Font mềm mại cho Bloom -->
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500&display=swap" rel="stylesheet">
   <!-- 🪷 FAVICON SETUP – tối ưu cho Safari, Chrome, iOS -->
 <!-- Favicons -->
 <link rel="icon" type="image/png" sizes="512x512" href="/bavatu/favicon-512.png?v=4">
@@ -482,39 +483,59 @@ footer.visible{                       /* JS sẽ gắn class này */
   opacity:1; transform:translateY(0); filter:blur(0);
 }
 
-/* nút vào */
-.bv-bloom-btn{
-  position:absolute; left:50%; bottom:24px; transform:translateX(-50%);
-  background:linear-gradient(180deg,#edc7a3,#d7a678);
-  color:#2b221a; font-weight:700; border:0; border-radius:999px;
-  padding:12px 20px; box-shadow:0 10px 22px rgba(0,0,0,.32);
-  opacity:0; pointer-events:none; transition:opacity .6s ease, transform .6s ease;
+/* chữ hiện theo giọt */
+#bv_bloom .bv-words {
+  display: flex;
+  gap: 0.5ch;
+  justify-content: center;
+  align-items: center;
+  color: #f6efe7;
+  font-weight: 300; /* nhẹ, mềm mại */
+  letter-spacing: 0.02em;
+  font-family: "Be Vietnam Pro", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-size: clamp(20px, 3.2vw, 34px);
+  margin-top: -8px;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
-#bv_bloom.btn-on .bv-bloom-btn{ opacity:1; pointer-events:auto; }
 
-/* nút bật âm (fallback) */
-/* Nút bật âm (chỉ hiện khi cần) */
-#bv-sound{
-  position: fixed;
-  right: 18px;
-  bottom: 18px;
-  z-index: 10010;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.08);
-  color: #f7efe6;
-  border: 1px solid rgba(255,255,255,.18);
-  backdrop-filter: blur(8px);
-  font-size: 14px;
-  line-height: 1;
+#bv_bloom .word {
   opacity: 0;
-  transform: translateY(8px);
-  pointer-events: none;
-  transition: opacity .25s ease, transform .25s ease;
+  transform: translateY(10px);
+  filter: blur(3px);
+  transition: opacity 0.45s ease, transform 0.45s ease, filter 0.45s ease;
 }
-#bv-sound.show{
-  opacity: .92;
+
+#bv_bloom .word.show {
+  opacity: 1;
   transform: translateY(0);
+  filter: blur(0);
+}
+
+/* nút "VÀO KHÔNG GIAN" */
+.bv-bloom-btn {
+  display: inline-block;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 28px;
+  background: linear-gradient(180deg, #edc7a3, #d7a678);
+  color: #2b221a;
+  font-family: "Be Vietnam Pro", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 24px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* khi hiện */
+#bv_bloom .bv-bloom-btn.show {
+  opacity: 1;
   pointer-events: auto;
 }
 #bv-sound:active{ transform: translateY(1px); opacity:.85; }
@@ -524,194 +545,126 @@ html.bv-lock, body.bv-lock{ overflow:hidden; }
 /* Khóa trang đến khi intro xong (Bloom ưu tiên hiển thị) */
 body.is-intro > :not(#bv_bloom){ opacity:0; transition:opacity .6s ease; }
 body.intro-done  > :not(#bv_bloom){ opacity:1; }
+/* Khi overlay mở => hiện nút luôn */
+#bv_bloom.on .bv-bloom-btn { opacity:1; pointer-events:auto; }
 
-/* === Bloom overlay === */
-#bv_bloom{
-  position:fixed; inset:0; z-index:9999;
-  display:grid; place-items:center;
-  background:#1d120c;            /* nâu ấm */
-  opacity:1; pointer-events:auto; transition: opacity .6s ease; /* luôn hiện ngay từ đầu */
-}
-#bv_bloom.leaving{ opacity:0; pointer-events:none; }
-
-/* khung trong */
-#bv_bloom .bv-inner{
-  position:relative;
-  width:min(760px,92vw); height:min(460px,64vh);
-  display:grid; place-items:center;
+/* ===== BLOOM (v3) ===== */
+:root{
+  --introDur: 2800ms;   /* tốc độ sóng */
+  --gap: 520ms;         /* nhịp giữa các chữ */
 }
 
-/* SVG sóng elip lan ngang (rõ ràng, dời xuống dưới dòng chữ) */
-/* Căn giữa tuyệt đối, căn giữa dòng chữ */
-/* ===== Sóng mảnh, fade rộng toàn màn hình ===== */
-#bv_bloom .ripples {
-  position: absolute;
-  left: 50%;
-  top: 40%;
-  transform: translate(-50%, -50%);
-  width: min(38vmin, 380px);   /* khởi điểm nhỏ hơn để nở tự nhiên hơn */
-  height: auto;
-  pointer-events: none;
-  overflow: visible;
+#bv_bloom{position:fixed; inset:0; z-index:9999; display:grid; place-items:center;
+  background:#1d120c; color:#f6efe7; opacity:1; pointer-events:auto; transition:opacity .6s ease;}
+#bv_bloom.leaving{opacity:0; pointer-events:none;}
+
+body.is-intro > :not(#bv_bloom){opacity:0; transition:opacity .25s ease;}
+body.intro-done  > :not(#bv_bloom){opacity:1;}
+
+#bv_bloom .bv-inner{position:relative; width:min(92vw,960px); text-align:center}
+
+/* Ripples — 8 vòng, độ dày/độ sáng khác nhau */
+#bv_bloom .ripples{position:fixed; inset:0; width:100vw; height:100vh; pointer-events:none;}
+#bv_bloom .ripple circle{
+  fill:none; transform-origin:50% 50%; transform:scale(.1); opacity:0;
+  stroke:rgba(246,239,231,.28); stroke-width:1.4;
+}
+#bv_bloom .r2 circle{stroke-width:1.2; stroke:rgba(246,239,231,.24)}
+#bv_bloom .r3 circle{stroke-width:1.0; stroke:rgba(246,239,231,.20)}
+#bv_bloom .r4 circle{stroke-width:0.9; stroke:rgba(246,239,231,.17)}
+#bv_bloom .r5 circle{stroke-width:0.8; stroke:rgba(246,239,231,.14)}
+#bv_bloom .r6 circle{stroke-width:0.7; stroke:rgba(246,239,231,.12)}
+#bv_bloom .r7 circle{stroke-width:0.6; stroke:rgba(246,239,231,.10)}
+#bv_bloom .r8 circle{stroke-width:0.55; stroke:rgba(246,239,231,.08)}
+#bv_bloom .r9 circle{ stroke-width:0.5; stroke:rgba(246,239,231,.07); }
+#bv_bloom .r10 circle{ stroke-width:0.45; stroke:rgba(246,239,231,.06); }
+
+#bv_bloom .ripples.run .ripple circle{animation:bvRipple var(--introDur) cubic-bezier(.18,.6,.25,1) forwards;}
+#bv_bloom .r2 circle{animation-delay: calc(var(--introDur)*.10)}
+#bv_bloom .r3 circle{animation-delay: calc(var(--introDur)*.20)}
+#bv_bloom .r4 circle{animation-delay: calc(var(--introDur)*.30)}
+#bv_bloom .r5 circle{animation-delay: calc(var(--introDur)*.40)}
+#bv_bloom .r6 circle{animation-delay: calc(var(--introDur)*.50)}
+#bv_bloom .r7 circle{animation-delay: calc(var(--introDur)*.60)}
+#bv_bloom .r8 circle{animation-delay: calc(var(--introDur)*.70)}
+#bv_bloom .r9 circle{ animation-delay: calc(var(--introDur)*.80); }
+#bv_bloom .r10 circle{ animation-delay: calc(var(--introDur)*.90); }
+
+@keyframes bvRipple{
+  0%   {opacity:.36; transform:scale(.14)}
+  55%  {opacity:.18}
+  100% {opacity:0;  transform:scale(9.2)}
 }
 
-/* Stroke mảnh, tách biệt – độ sáng giảm dần mỗi vòng */
-#bv_bloom .r1 circle { stroke: rgba(255,255,255,.35); stroke-width: 0.8; }
-#bv_bloom .r2 circle { stroke: rgba(255,255,255,.28); stroke-width: 0.7; }
-#bv_bloom .r3 circle { stroke: rgba(255,255,255,.22); stroke-width: 0.6; }
-
-/* Gốc animation */
-#bv_bloom .ripple {
-  fill: none;
-  opacity: 0;
-  transform-origin: 50% 50%;
-  animation: rippleSoft 2600ms cubic-bezier(.18,.6,.25,1) forwards;
-  animation-play-state: paused;
-  will-change: transform, opacity;
-  filter: drop-shadow(0 3px 8px rgba(0,0,0,.25));
-}
-
-/* delay giữa các vòng cho tự nhiên */
-#bv_bloom .r2 { animation-delay: 0.25s; }
-#bv_bloom .r3 { animation-delay: 0.5s; }
-
-/* Khi thêm class .run => bắt đầu */
-#bv_bloom .ripples.run .ripple { animation-play-state: running; }
-
-/* Hiệu ứng nở – mảnh, mềm, fade-out rộng */
-@keyframes rippleSoft {
-  0%   { opacity: 0.85; transform: scale(0.2); }
-  50%  { opacity: 0.45; }
-  80%  { opacity: 0.15; }
-  100% { opacity: 0; transform: scale(11); }  /* scale lớn = phủ full màn hình */
-}
-
-/* chữ */
+/* Chữ — đảm bảo đúng thứ tự & không xuống dòng lạ */
 #bv_bloom .bv-words{
-  display:flex; gap:.55ch; justify-content:center; align-items:center;
-  color:#f6efe7; font-weight:700; letter-spacing:.02em;
-  font-family:"Be Vietnam Pro", system-ui,-apple-system, Segoe UI, Roboto, Arial;
-  font-size:clamp(22px,3.4vw,36px);
-  text-shadow:0 6px 18px rgba(0,0,0,.45);
-  margin-top:-6px;
+  display:flex; gap:.55ch; justify-content:center; white-space:nowrap;
+  font-family:"Be Vietnam Pro", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-weight:300; letter-spacing:.02em; font-size:clamp(22px,3.4vw,36px);
+  text-shadow:0 6px 18px rgba(0,0,0,.35); margin:0 0 28px;
 }
-#bv_bloom .word{
-  opacity:0; transform:translateY(10px); filter:blur(3px);
-  transition:opacity .36s ease, transform .36s ease, filter .36s ease;
-}
-#bv_bloom .word.show{
-  opacity:1; transform:translateY(0); filter:blur(0);
-}
+#bv_bloom .word{opacity:0; transform:translateY(10px); filter:blur(3px);
+  transition:opacity .36s ease, transform .36s ease, filter .36s ease;}
+#bv_bloom .word.show{opacity:1; transform:translateY(0); filter:blur(0);}
 
-/* nút vào */
-.bv-bloom-btn{
-  position:absolute; left:50%; bottom:26px; transform:translateX(-50%);
-  background:linear-gradient(180deg,#edc7a3,#d7a678);
-  color:#2b221a; font-weight:700; border:0; border-radius:999px;
-  padding:12px 20px; box-shadow:0 10px 22px rgba(0,0,0,.32);
-  opacity:0; pointer-events:none;
-  transition:opacity .7s ease, transform .7s ease;
+/* Nút — căn giữa tuyệt đối, chỉ hiện khi .show */
+#bv-enter{
+  position:absolute; left:50%; bottom:60px; transform:translateX(-50%);
+  appearance:none; border:0; cursor:pointer;
+  background:linear-gradient(180deg,#edc7a3,#d7a678); color:#2b221a;
+  font-weight:600; letter-spacing:.3px; padding:12px 26px; border-radius:999px;
+  box-shadow:0 10px 22px rgba(0,0,0,.32);
+  opacity:0; pointer-events:none; transition:opacity .6s ease;
 }
-#bv_bloom.btn-on .bv-bloom-btn{ opacity:1; pointer-events:auto; }
+#bv-enter.show{opacity:1; pointer-events:auto;}
 
-/* nút bật âm (fallback Safari) */
-#bv-sound{
-  position:absolute; right:16px; bottom:16px;
-  background:rgba(255,255,255,.12); color:#fff;
-  border:1px solid rgba(255,255,255,.25);
-  border-radius:10px; padding:6px 10px; backdrop-filter:blur(6px);
-  font-size:13px;
-}
-/* ===== Timing đồng bộ (CSS var) ===== */
-:root{ --introDur: 2400ms; } /* đổi 1800/2200/3000… để nhanh/chậm toàn cảnh */
-
-/* ===== Text mềm hơn ===== */
-#bv_bloom .bv-words{
-  font-family: "Be Vietnam Pro", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-weight: 500;                 /* ↓ mềm hơn */
-  letter-spacing: .02em;
-  color: #f6efe7;
-}
-#bv_bloom .word{ font-weight: 500; }
-
-/* ===== Ripples: hình tròn, căn giữa, nở 1 lần ===== */
-#bv_bloom .ripples{
-  position:absolute;
-  left:50%;
-  top:58%;                         /* đặt thấp hơn dòng chữ một chút */
-  transform:translate(-50%,-50%);  /* căn giữa tuyệt đối */
-  width:min(46vmin, 420px);        /* kích thước khởi điểm */
-  height:auto;
-  pointer-events:none;
-  overflow:visible;
-}
-#bv_bloom .ripples circle{
-  fill:none;
-  stroke-width:1.5;
-}
-/* sắc độ mỗi vòng khác nhau → nhìn “không dính” */
-#bv_bloom .r1 circle{ stroke:rgba(255,255,255,.45); }
-#bv_bloom .r2 circle{ stroke:rgba(255,255,255,.33); }
-#bv_bloom .r3 circle{ stroke:rgba(255,255,255,.24); }
-
-#bv_bloom .ripple{
-  opacity:0;
-  transform-origin:50% 50%;
-  animation: ripple var(--introDur) cubic-bezier(.15,.5,.2,1) forwards; /* 1 lần */
-  animation-play-state: paused;    /* chờ JS bật */
-  filter: drop-shadow(0 2px 5px rgba(0,0,0,.35));
-  will-change: transform, opacity;
-}
-/* lệch pha nhẹ để không “dính” nhau */
-#bv_bloom .r2{ animation-delay: calc(var(--introDur) * .14); }
-#bv_bloom .r3{ animation-delay: calc(var(--introDur) * .28); }
-
-/* Khi thêm .run => bắt đầu */
-#bv_bloom .ripples.run .ripple{ animation-play-state: running; }
-
-/* Nở từ tâm → phủ fullscreen (7.6 ~ 9.0 tuỳ màn) rồi biến mất */
-@keyframes ripple{
-  0%   { opacity:.78; transform:scale(.18); }
-  60%  { opacity:.22; }
-  100% { opacity:0;   transform:scale(7.6); } /* tăng nếu chưa phủ hết → 8.2 / 9 */
+/* Mobile tinh chỉnh khoảng cách */
+@media (max-width:520px){
+  #bv_bloom .bv-words{ gap:.45ch; margin-bottom:22px; }
 }
 </style>
 </head>
 <body>
-<script>document.body.classList.add('is-intro');</script>
-<!-- === BAVATU • Bloom intro (overlay) === -->
-<div id="bv_bloom" aria-hidden="true">
-  <div class="bv-inner">
-    <!-- Ripples: hình tròn, nở từ tâm -->
-<svg class="ripples" viewBox="0 0 100 100" aria-hidden="true">
-  <g class="ripple r1"><circle cx="50" cy="50" r="8"/></g>
-  <g class="ripple r2"><circle cx="50" cy="50" r="8"/></g>
-  <g class="ripple r3"><circle cx="50" cy="50" r="8"/></g>
-</svg>
+<script>
+  document.body.classList.add('is-intro');
+  // bật bloom ngay khi load
+  window.addEventListener('load', () => {
+    document.getElementById('bv_bloom').classList.add('on');
+  });
+</script>
 
-    <!-- chữ theo từng “giọt” -->
+<!-- === Bloom intro === -->
+<div id="bv_bloom" aria-hidden="false">
+  <div class="bv-inner">
+    <svg class="ripples" viewBox="0 0 100 100" aria-hidden="true">
+      <g class="ripple r1"><circle cx="50" cy="50" r="8"/></g>
+      <g class="ripple r2"><circle cx="50" cy="50" r="8"/></g>
+      <g class="ripple r3"><circle cx="50" cy="50" r="8"/></g>
+      <g class="ripple r4"><circle cx="50" cy="50" r="8"/></g>
+      <g class="ripple r5"><circle cx="50" cy="50" r="8"/></g>
+      <g class="ripple r6"><circle cx="50" cy="50" r="8"/></g>
+      <g class="ripple r7"><circle cx="50" cy="50" r="8"/></g>
+      <g class="ripple r8"><circle cx="50" cy="50" r="8"/></g>
+      <g class="ripple r9"><circle cx="50" cy="50" r="8"/></g>
+      <g class="ripple r10"><circle cx="50" cy="50" r="8"/></g>
+    </svg>
+
     <div class="bv-words" aria-live="polite" aria-label="Luôn quán sát hơi thở">
-      <span class="word" data-step="1">Luôn</span>
-      <span class="word" data-step="2">quán</span>
-      <span class="word" data-step="3">sát</span>
-      <span class="word" data-step="4">hơi</span>
-      <span class="word" data-step="5">thở</span>
+      <span class="word">Luôn</span>
+      <span class="word">quán</span>
+      <span class="word">sát</span>
+      <span class="word">hơi</span>
+      <span class="word">thở</span>
     </div>
 
-    <!-- nút vào (vẫn có, nhưng intro vẫn auto) -->
-    
+    <button id="bv-enter" type="button">VÀO KHÔNG GIAN</button>
 
-    <!-- Âm thanh giọt nước -->
-<audio id="bv-drop" preload="auto" playsinline>
-  <source src="bavatu-drop.mp3?v=5" type="audio/mpeg">
-</audio>
-
-<!-- Nút bật âm: chỉ hiện khi cần -->
-<button id="bv-sound" aria-label="Bật âm" title="Bật âm">Bật âm</button>
-
+    <audio id="bv-drop" preload="auto" playsinline>
+      <source src="bavatu-drop.mp3" type="audio/mpeg">
+    </audio>
+  </div>
 </div>
 <!-- === /Bloom intro === -->
-</div>
 
   <!-- ===== HERO BAVATU — VIETNAMESE-SAFE FONTS ===== -->
 <!-- Fonts: Merriweather (serif) + Be Vietnam Pro (sans), đều hỗ trợ tiếng Việt -->
@@ -771,6 +724,7 @@ body.intro-done  > :not(#bv_bloom){ opacity:1; }
     .hero-center h1{font-size:30px;}
     .hero-center p{font-size:14px;}
   }
+
 </style>
 
 <section class="hero" id="hero">
@@ -1084,72 +1038,64 @@ Không một cái Chạm nào là vô nghĩa – mỗi chuyển động đều m
   }
 </script>
 <script>
-(() => {
-  // ===== THỜI GIAN / NHỊP =====
-  const INTRO_MIN = 2400;   // tối thiểu ở lại Bloom ~2.4s
-  const INTRO_MAX = 5200;   // trễ nhất 5.2s vẫn vào trang
-  const GAP       = 520;    // nhịp hiện từng chữ (ms)
+(()=> {
+  document.body.classList.add('is-intro');
 
-  const bloom    = document.getElementById('bv_bloom');
-  const ripples  = document.querySelector('#bv_bloom .ripples');
-  const words    = [...document.querySelectorAll('#bv_bloom .bv-words .word')]; // <— SỬA
-  const audioEl  = document.getElementById('bv-drop');
-  const soundBtn = document.getElementById('bv-sound');
+  const bloom   = document.getElementById('bv_bloom');
+  const ripples = bloom.querySelector('.ripples');
+  const words   = [...bloom.querySelectorAll('.word')];
+  const btn     = document.getElementById('bv-enter');
+  const audioEl = document.getElementById('bv-drop');
 
-  let unlocked = false;
+  const GAP = 520;                     // nhịp chuẩn
+  const EXTRA_PAUSE = 260;             // thêm khoảng nghỉ giữa "Luôn" -> "quán"
+  const BTN_DELAY = 400;               // trễ nhỏ trước khi hiện nút
 
-  function updateSoundBtn(){
-    soundBtn?.classList.toggle('show', !unlocked);
+  function start(){
+    ripples.classList.add('run');
+
+    // Hiện chữ theo đúng thứ tự, thêm nghỉ giữa “Luôn” và “quán”
+    words.forEach((w, i) => {
+      const base = i * GAP;
+      const delay = (i >= 1) ? base + EXTRA_PAUSE : base;
+      setTimeout(()=> w.classList.add('show'), delay);
+    });
+
+    // Nút hiện sau khi chữ cuối xong
+    const total = (words.length - 1) * GAP + EXTRA_PAUSE + BTN_DELAY + GAP;
+    setTimeout(()=> btn.classList.add('show'), total);
   }
 
-  // Hiện chữ theo nhịp + chạy ripple
-  function startVisual(){
-    words.forEach((w,i)=> setTimeout(()=> w.classList.add('show'), i*GAP));
-    ripples?.classList.add('run'); // <— SỬA: kích hoạt sóng
-  }
-
-  // Thử phát âm thanh (có thể bị chặn)
-  async function tryPlay(){
-    try{
-      audioEl.currentTime = 0;
-      audioEl.volume = 0.9;
-      await audioEl.play();
-      return true;
-    }catch(e){
-      return false;
-    }
-  }
-
-  // Vào trang chính
-  function openSite(){
+  // Rời Bloom (bỏ overlay, hiện trang chính)
+  function leave(){
     if (bloom.classList.contains('leaving')) return;
     bloom.classList.add('leaving');
+    document.body.classList.remove('is-intro');
     document.body.classList.add('intro-done');
-    setTimeout(()=> { bloom.style.display = 'none'; }, 650);
+    setTimeout(()=> bloom.remove(), 600);
   }
 
-  // Click “Bật âm” để mở khóa audio (Safari/Chrome strict)
-  function unlockOnce(){
-    tryPlay().then(ok => { unlocked = ok; updateSoundBtn(); });
-  }
-  soundBtn?.addEventListener('click', unlockOnce);
-
-  // ===== KHỞI ĐỘNG NGAY KHI DOM SẴN SÀNG =====
-  document.addEventListener('DOMContentLoaded', () => {
-    startVisual();                             // chạy ngay
-    // “nudge” nhẹ cho Safari
-    setTimeout(()=> tryPlay().then(ok => {
-      unlocked = ok; updateSoundBtn();
-      if (ok) audioEl.addEventListener('ended', openSite, {once:true});
-    }), 120);
-
-    // Bảo hiểm thời gian: audio-end / min time / hard cap
-    const byAudioEnd = new Promise(r => audioEl.addEventListener('ended', r, {once:true}));
-    const byMinTime  = new Promise(r => setTimeout(r, INTRO_MIN));
-    const byHardCap  = new Promise(r => setTimeout(r, INTRO_MAX));
-
-    Promise.race([byAudioEnd, byMinTime, byHardCap]).then(openSite);
+  // Click = chắc chắn có âm + vẫn rời trang
+  btn.addEventListener('click', async () => {
+    try {
+      audioEl.currentTime = 0;
+      audioEl.volume = 0.9;
+      // Phát nhờ user gesture — Safari/Chrome đều OK
+      const playPromise = audioEl.play();
+      // Rời sau tiếng *hoặc* sau 3.2s bảo hiểm
+      let left = false;
+      const safe = setTimeout(()=> { if(!left){ left=true; leave(); } }, 3200);
+      audioEl.addEventListener('ended', () => { if(!left){ left=true; clearTimeout(safe); leave(); } }, { once: true });
+      await playPromise; // tránh Uncaught
+    } catch(e) {
+      // Nếu không phát được (chặn quyền), vẫn rời mượt
+      leave();
+    }
   });
+
+  (document.readyState === 'loading')
+    ? document.addEventListener('DOMContentLoaded', start)
+    : start();
 })();
 </script>
 </body>
