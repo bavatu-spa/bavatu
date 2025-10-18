@@ -511,7 +511,7 @@ footer.visible{                       /* JS sẽ gắn class này */
   filter: blur(0);
 }
 
-/* nút "VÀO KHÔNG GIAN" */
+/* nút "CLICK VÀO TRANG" */
 .bv-bloom-btn {
   display: inline-block;
   position: relative;
@@ -657,7 +657,7 @@ body.intro-done  > :not(#bv_bloom){opacity:1;}
       <span class="word">thở</span>
     </div>
 
-    <button id="bv-enter" class="bv-bloom-btn">VÀO KHÔNG GIAN</button>
+    <button id="bv-enter" class="bv-bloom-btn">CLICK VÀO TRANG</button>
 
     <audio id="bv-drop" preload="auto" playsinline>
       <source src="bavatu-drop.mp3" type="audio/mpeg">
@@ -1069,8 +1069,8 @@ Không một cái Chạm nào là vô nghĩa – mỗi chuyển động đều m
       setTimeout(() => w.classList.add('show'), delay);
     });
 
-    // sau khi chữ xong → hiện nút "Vào không gian"
-    const total = (words.length - 1) * GAP + EXTRA_PAUSE + BTN_DELAY + GAP;
+    // sau khi chữ xong → hiện nút "Click vào trang"
+    const total = (words.length - 1) * GAP + EXTRA_PAUSE + BTN_DELAY + GAP + GAP;
     setTimeout(() => bloom.classList.add('btn-on'), total);
   }
 
