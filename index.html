@@ -1070,7 +1070,7 @@ Không một cái Chạm nào là vô nghĩa – mỗi chuyển động đều m
     });
 
     // sau khi chữ xong → hiện nút "Click vào trang"
-    const total = (words.length - 1) * GAP + EXTRA_PAUSE + BTN_DELAY + GAP + GAP;
+    const total = (words.length - 1) * GAP + EXTRA_PAUSE + BTN_DELAY + GAP;
     setTimeout(() => bloom.classList.add('btn-on'), total);
   }
 
@@ -1090,7 +1090,7 @@ Không một cái Chạm nào là vô nghĩa – mỗi chuyển động đều m
 
       // Rời trang khi âm thanh phát tới 60%
       audioEl.ontimeupdate = () => {
-        if (audioEl.duration && audioEl.currentTime >= audioEl.duration * 0.4) {
+        if (audioEl.duration && audioEl.currentTime >= audioEl.duration * 0.6) {
           audioEl.ontimeupdate = null;
           leave();
         }
