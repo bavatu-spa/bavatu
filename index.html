@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>BAVATU | Home Spa</title>
   <!-- Font mềm mại cho Bloom -->
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- 🪷 FAVICON SETUP – tối ưu cho Safari, Chrome, iOS -->
 <!-- Favicons -->
 <link rel="icon" type="image/png" sizes="512x512" href="/bavatu/favicon-512.png?v=4">
@@ -50,6 +50,12 @@
     img{max-width:100%;display:block}
     a{color:inherit;text-decoration:none}
     .container{max-width:var(--max);margin-inline:auto;padding-inline:22px}
+body{
+  font-family:"Bricolage Grotesque", system-ui, sans-serif;
+  font-weight:400;
+  letter-spacing:0.01em;
+  color:#2b221a;
+}
 
     /* Header */
     header{position:sticky;top:0;z-index:50;backdrop-filter:saturate(120%) blur(10px);
@@ -163,9 +169,10 @@ footer.visible{                       /* JS sẽ gắn class này */
 .footer-inner h3{
   margin:0;
   color:#fff;
-  font-weight:800;
-  font-family:"Playfair Display", serif;
+  font-family:"Bricolage Grotesque", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight:600;
   font-size:clamp(22px,3vw,40px);
+  letter-spacing:.01em;
   text-shadow:0 10px 30px rgba(0,0,0,.45);
 }
 
@@ -173,8 +180,10 @@ footer.visible{                       /* JS sẽ gắn class này */
 .footer-inner p{
   margin:0 0 14px 0;
   color:#f3ede4;
-  font-family:"Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family:"Bricolage Grotesque", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight:400;
   font-size:clamp(15px,2vw,20px);
+  letter-spacing:.01em;
   opacity:.9;
   text-shadow:0 8px 24px rgba(0,0,0,.45);
 }
@@ -470,7 +479,7 @@ footer.visible{                       /* JS sẽ gắn class này */
 #bv_bloom .bv-words{
   display:flex; gap:.5ch; justify-content:center; align-items:center;
   color:#f6efe7; font-weight:700; letter-spacing:.02em;
-  font-family:"Be Vietnam Pro", system-ui,-apple-system, Segoe UI, Roboto, Arial;
+  font-family:"Bricolage Grotesque", system-ui,-apple-system, Segoe UI, Roboto, Arial;
   font-size:clamp(20px,3.2vw,34px);
   text-shadow:0 6px 18px rgba(0,0,0,.45);
   margin-top:-8px;
@@ -484,18 +493,10 @@ footer.visible{                       /* JS sẽ gắn class này */
 }
 
 /* chữ hiện theo giọt */
-#bv_bloom .bv-words {
-  display: flex;
-  gap: 0.5ch;
-  justify-content: center;
-  align-items: center;
-  color: #f6efe7;
-  font-weight: 300; /* nhẹ, mềm mại */
-  letter-spacing: 0.02em;
-  font-family: "Be Vietnam Pro", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-size: clamp(20px, 3.2vw, 34px);
-  margin-top: -8px;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+#bv_bloom .bv-words{
+  font-family:"Bricolage Grotesque", "Be Vietnam Pro", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight:400;
+  letter-spacing:0.02em;
 }
 
 #bv_bloom .word {
@@ -511,28 +512,28 @@ footer.visible{                       /* JS sẽ gắn class này */
   filter: blur(0);
 }
 
-/* nút "CLICK VÀO TRANG" */
-.bv-bloom-btn {
-  display: inline-block;
-  position: relative;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 28px;
-  background: linear-gradient(180deg, #edc7a3, #d7a678);
-  color: #2b221a;
-  font-family: "Be Vietnam Pro", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-weight: 500;
-  font-size: 15px;
-  border: 0;
-  border-radius: 999px;
-  padding: 12px 24px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.6s ease, transform 0.6s ease;
+/* Nút "VÀO KHÔNG GIAN" – ẩn mặc định */
+.bv-bloom-btn,
+#bv-enter{
+  display:inline-block;
+  position:absolute;
+  left:50%;
+  bottom:60px;
+  transform:translateX(-50%);
+  background:linear-gradient(180deg,#edc7a3,#d7a678);
+  color:#2b221a;
+  font-family:"Bricolage Grotesque", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight:600;
+  letter-spacing:.03em;
+  border:0;
+  border-radius:999px;
+  padding:12px 24px;
+  box-shadow:0 8px 20px rgba(0,0,0,.25);
+  cursor:pointer;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .6s ease, transform .6s ease;
 }
-
 /* khi hiện */
 #bv_bloom .bv-bloom-btn.show {
   opacity: 1;
@@ -545,8 +546,9 @@ html.bv-lock, body.bv-lock{ overflow:hidden; }
 /* Khóa trang đến khi intro xong (Bloom ưu tiên hiển thị) */
 body.is-intro > :not(#bv_bloom){ opacity:0; transition:opacity .6s ease; }
 body.intro-done  > :not(#bv_bloom){ opacity:1; }
-/* Khi overlay mở => hiện nút luôn */
-#bv_bloom.on .bv-bloom-btn { opacity:1; pointer-events:auto; }
+
+/* Khi JS thêm .btn-on sau chữ cuối -> hiện nút */
+#bv_bloom.btn-on #bv-enter { opacity:1; pointer-events:auto; }
 
 /* ===== BLOOM (v3) ===== */
 :root{
@@ -598,10 +600,18 @@ body.intro-done  > :not(#bv_bloom){opacity:1;}
 
 /* Chữ — đảm bảo đúng thứ tự & không xuống dòng lạ */
 #bv_bloom .bv-words{
-  display:flex; gap:.55ch; justify-content:center; white-space:nowrap;
-  font-family:"Be Vietnam Pro", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  font-weight:300; letter-spacing:.02em; font-size:clamp(22px,3.4vw,36px);
-  text-shadow:0 6px 18px rgba(0,0,0,.35); margin:0 0 28px;
+  display:flex;
+  gap:.55ch;
+  justify-content:center;
+  align-items:center;
+  color:#f6efe7;
+  font-family:"Bricolage Grotesque", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight:400;
+  letter-spacing:.02em;
+  font-size:clamp(22px,3.4vw,36px);
+  text-shadow:0 6px 18px rgba(0,0,0,.45);
+  margin-top:-6px;
+}
 }
 #bv_bloom .word{opacity:0; transform:translateY(10px); filter:blur(3px);
   transition:opacity .36s ease, transform .36s ease, filter .36s ease;}
@@ -700,19 +710,15 @@ body.intro-done  > :not(#bv_bloom){opacity:1;}
   body.scrolled .hero-center{ opacity:.48; transform:translate(-50%,-50%) scale(.992); }
 
   .hero-center h1{
-    font-family:'Merriweather', serif;
-    font-weight:700;
-    font-size:clamp(34px,5vw,58px);
-    letter-spacing:.3px;
-    margin:0 0 12px;
-  }
-  .hero-center p{
-    font-family:'Be Vietnam Pro', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-    font-weight:300;
-    font-size:clamp(15px,2vw,20px);
-    color:rgba(255,255,255,.92);
-    margin:0;
-  }
+  font-family:"Bricolage Grotesque", serif;
+  font-weight:600;
+  letter-spacing:0.03em;
+}
+.hero-center p{
+  font-family:"Bricolage Grotesque", sans-serif;
+  font-weight:400;
+  letter-spacing:0.01em;
+}
 
   @keyframes fadeInHero{
     from{opacity:0; transform:translate(-50%,-46%);}
@@ -724,6 +730,49 @@ body.intro-done  > :not(#bv_bloom){opacity:1;}
     .hero-center h1{font-size:30px;}
     .hero-center p{font-size:14px;}
   }
+/* === Force Bricolage font cho Footer === */
+footer .footer-inner h3,
+footer .footer-inner p,
+footer .copyright {
+  font-family: "Bricolage Grotesque", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: #f3ede4;
+}
+
+/* Tiêu đề chính */
+footer .footer-inner h3 {
+  font-weight: 600;
+  font-size: clamp(22px, 3vw, 40px);
+  color: #fff;
+  text-shadow: 0 10px 30px rgba(0, 0, 0, .45);
+}
+
+/* Dòng phụ */
+footer .footer-inner p {
+  font-size: clamp(15px, 2vw, 20px);
+  opacity: .9;
+  text-shadow: 0 8px 24px rgba(0, 0, 0, .45);
+}
+
+/* Copyright */
+footer .copyright {
+  font-size: 13px;
+  opacity: .75;
+  text-shadow: none;
+}
+/* Giảm size tiêu đề footer để không bị rớt dòng xấu */
+footer .footer-inner h3{
+  font-size: clamp(20px, 2.6vw, 36px) !important; /* ↓ nhỏ hơn: max 36px thay vì 40px */
+  line-height: 1.15;
+  letter-spacing: .01em;
+  text-wrap: balance; /* đẹp hơn khi xuống dòng (trình duyệt mới hỗ trợ) */
+}
+@media (max-width: 768px){
+  footer .footer-inner h3{
+    font-size: clamp(18px, 5.6vw, 28px) !important;
+  }
+}
 
 </style>
 
