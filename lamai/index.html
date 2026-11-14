@@ -89,7 +89,8 @@ a{color:#B44D70}a:hover{color:#8E3A59}
 @media (max-width: 760px){.lm-rod{left:4% !important;right:4% !important}.lm-wd{display:none}.lm-rack{overflow-x:auto;justify-content:flex-start;padding-left:20px;padding-right:20px;gap:8px;scroll-snap-type:x mandatory}.lm-hand{flex:0 0 150px;max-width:none;scroll-snap-align:center}.lm-cardwrap{width:124px;margin-top:-46px}}
 .lm-promo{animation:lmPromoIn .45s cubic-bezier(.2,.8,.2,1)}@keyframes lmPromoIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
 h1,h2,h3{text-wrap:balance}p,li,summary,span{text-wrap:pretty}.lm-nw{white-space:nowrap}
-.lm-cv{content-visibility:auto;contain-intrinsic-size:auto 900px}
+.lm-cv{}
+.lm-studio>div:first-child{height:426px;aspect-ratio:auto !important}
 .lm-fadeA{animation:lmFadeA .6s ease}.lm-fadeB{animation:lmFadeB .6s ease}@keyframes lmFadeA{from{opacity:.2}to{opacity:1}}@keyframes lmFadeB{from{opacity:.2}to{opacity:1}}
 .lm-push{animation:lmPush 14s ease-in-out infinite alternate;transform-origin:50% 35%}
 @keyframes lmPush{from{transform:scale(1)}to{transform:scale(1.07)}}
@@ -147,7 +148,7 @@ h1,h2,h3{text-wrap:balance}p,li,summary,span{text-wrap:pretty}.lm-nw{white-space
 @keyframes lmFall{0%{transform:translate(0,-10px) rotate(0)}100%{transform:translate(60px,110vh) rotate(320deg)}}
 .lm-live{width:8px;height:8px;border-radius:50%;background:#B0262E;box-shadow:0 0 0 0 rgba(176,38,46,.6);animation:lmPulse 1.6s ease-out infinite}
 @keyframes lmPulse{0%{box-shadow:0 0 0 0 rgba(176,38,46,.55)}100%{box-shadow:0 0 0 10px rgba(176,38,46,0)}}
-@media (max-width: 760px){.lm-wlg{grid-template-columns:1fr 1fr !important}.lm-studio{grid-template-columns:150px minmax(0,1fr) !important}.lm-album{grid-template-columns:repeat(2,minmax(0,1fr)) !important}.lm-stepl{font-size:9px}.lm-stepl span{font-size:9px !important}.lm-fields{grid-template-columns:1fr !important}.lm-foot{grid-template-columns:1fr !important}.lm-stept{display:none}.lm-rrow{grid-template-columns:minmax(0,1fr) 64px 84px !important}.lm-kpis{grid-template-columns:1fr !important}.lm-chairs{grid-template-columns:repeat(2,minmax(0,1fr)) !important}}
+@media (max-width: 760px){.lm-wlg{grid-template-columns:1fr 1fr !important}.lm-studio{grid-template-columns:150px minmax(0,1fr) !important}.lm-studio>div:first-child{height:267px}.lm-album{grid-template-columns:repeat(2,minmax(0,1fr)) !important}.lm-stepl{font-size:9px}.lm-stepl span{font-size:9px !important}.lm-fields{grid-template-columns:1fr !important}.lm-foot{grid-template-columns:1fr !important}.lm-stept{display:none}.lm-rrow{grid-template-columns:minmax(0,1fr) 64px 84px !important}.lm-kpis{grid-template-columns:1fr !important}.lm-chairs{grid-template-columns:repeat(2,minmax(0,1fr)) !important}}
 .lm-mbar{display:none}
 .lm-savedbtn{position:fixed;right:24px;bottom:84px;z-index:50;min-height:38px;padding:0 16px;border-radius:999px;border:1px solid #EFC3D0;background:#FFF4F6;color:#B44D70;font:500 12px/1 'Be Vietnam Pro',system-ui,sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(63,38,51,.15);transition:opacity .3s ease}
 .lm-savedbtn.lm-off{opacity:0;pointer-events:none}
