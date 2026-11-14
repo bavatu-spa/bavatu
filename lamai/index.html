@@ -996,6 +996,10 @@ const HANH = { Kim: 'trắng, xám, bạc, ánh kim', Moc: 'xanh lá, xanh rêu'
 const HN = { Kim: 'Kim', Moc: 'Mộc', Thuy: 'Thủy', Hoa: 'Hỏa', Tho: 'Thổ' };
 const SINH = { Kim: 'Tho', Moc: 'Thuy', Thuy: 'Kim', Hoa: 'Moc', Tho: 'Hoa' }; // hành sinh ra mệnh
 const KHAC = { Kim: 'Hoa', Moc: 'Kim', Thuy: 'Tho', Hoa: 'Thuy', Tho: 'Moc' }; // hành khắc mệnh
+const HANH_EN = { Kim: 'white, grey, silver, metallic', Moc: 'green, moss green', Thuy: 'black, blue', Hoa: 'red, pink, orange, purple', Tho: 'yellow, brown, nude, beige' };
+const HN_EN = { Kim: 'Metal', Moc: 'Wood', Thuy: 'Water', Hoa: 'Fire', Tho: 'Earth' };
+const ZG_EN = { F: { n: 'Fire', pal: 'red, burnt orange, gold, burgundy' }, E: { n: 'Earth', pal: 'nude, beige, brown, moss green' }, A: { n: 'Air', pal: 'pastel, baby blue, lavender, chrome' }, W: { n: 'Water', pal: 'sea blue, purple, pearl, silver' } };
+const ZN_EN = { 'Ma Kết': 'Capricorn', 'Bảo Bình': 'Aquarius', 'Song Ngư': 'Pisces', 'Bạch Dương': 'Aries', 'Kim Ngưu': 'Taurus', 'Song Tử': 'Gemini', 'Cự Giải': 'Cancer', 'Sư Tử': 'Leo', 'Xử Nữ': 'Virgo', 'Thiên Bình': 'Libra', 'Bọ Cạp': 'Scorpio', 'Nhân Mã': 'Sagittarius' };
 const ELM = { 1: ['Kim', 'Tho'], 2: ['Hoa', 'Kim'], 3: ['Moc', 'Tho'], 4: ['Hoa'], 5: ['Tho', 'Hoa'], 6: ['Kim', 'Tho'], 7: ['Tho', 'Kim'], 8: ['Hoa', 'Tho'], 9: ['Tho'], 10: ['Thuy', 'Kim'], 11: ['Tho'], 12: ['Thuy', 'Kim', 'Tho'], 13: ['Kim'], 14: ['Moc', 'Tho'] };
 const menhOf = (y) => { const can = [4, 4, 5, 5, 1, 1, 2, 2, 3, 3][((y % 10) + 10) % 10]; const chi = [0, 0, 1, 1, 2, 2, 0, 0, 1, 1, 2, 2][(((y - 4) % 12) + 12) % 12]; let n = can + chi; if (n > 5) n -= 5; return ['', 'Kim', 'Thuy', 'Hoa', 'Tho', 'Moc'][n]; };
 const ZOD = [['Ma Kết', 1, 19, 'E'], ['Bảo Bình', 2, 18, 'A'], ['Song Ngư', 3, 20, 'W'], ['Bạch Dương', 4, 19, 'F'], ['Kim Ngưu', 5, 20, 'E'], ['Song Tử', 6, 20, 'A'], ['Cự Giải', 7, 22, 'W'], ['Sư Tử', 8, 22, 'F'], ['Xử Nữ', 9, 22, 'E'], ['Thiên Bình', 10, 22, 'A'], ['Bọ Cạp', 11, 21, 'W'], ['Nhân Mã', 12, 21, 'F'], ['Ma Kết', 12, 31, 'E']];
@@ -1333,14 +1337,16 @@ class Component extends DCLogic {
         const pickSet = (id) => () => { const x = SETS.find((y) => y.id === id); this.setState({ feat: id, gender: x && x.g === 'm' ? 'm' : 'f', open: true }); this.go('top'); };
         let fs = null, rec = [];
         if (tab === 0 && st.spYear >= 1900 && st.spYear <= 2100) { const m = menhOf(st.spYear); const good = [m, SINH[m]], bad = KHAC[m];
-          fs = { head: 'Sinh năm ' + st.spYear + ' · mệnh ' + HN[m], good: HANH[m] + ' (bản mệnh) · ' + HANH[SINH[m]] + ' (' + HN[SINH[m]] + ' sinh ' + HN[m] + ')', bad: HANH[bad] + ' (' + HN[bad] + ' khắc ' + HN[m] + ')',
+          const EN = st.lang === 'en';
+          fs = EN ? { head: 'Born ' + st.spYear + ' · ' + HN_EN[m] + ' element', good: HANH_EN[m] + ' (your element) · ' + HANH_EN[SINH[m]] + ' (' + HN_EN[SINH[m]] + ' feeds ' + HN_EN[m] + ')', bad: HANH_EN[bad] + ' (' + HN_EN[bad] + ' clashes with ' + HN_EN[m] + ')', tip: 'Tip: go for a ' + HANH_EN[m].split(', ')[0] + ' or ' + HANH_EN[SINH[m]].split(', ')[0] + ' base and avoid large areas of ' + HANH_EN[bad].split(', ')[0] + '. If you love a colour to avoid, keep it to a small accent.' } : { head: 'Sinh năm ' + st.spYear + ' · mệnh ' + HN[m], good: HANH[m] + ' (bản mệnh) · ' + HANH[SINH[m]] + ' (' + HN[SINH[m]] + ' sinh ' + HN[m] + ')', bad: HANH[bad] + ' (' + HN[bad] + ' khắc ' + HN[m] + ')',
             tip: 'Gợi ý: chọn nền màu ' + HANH[m].split(', ')[0] + ' hoặc ' + HANH[SINH[m]].split(', ')[0] + ', tránh mảng lớn màu ' + HANH[bad].split(', ')[0] + '. Nếu thích màu nên tránh, dùng làm điểm nhấn nhỏ.' };
           rec = pool.map((x) => { const e = ELM[x.id] || []; const sc = e.filter((k) => good.indexOf(k) >= 0).length * 2 - (e.indexOf(bad) >= 0 ? 3 : 0); return { x: x, sc: sc, e: e }; }).filter((r) => r.sc > 0).sort((a, b) => b.sc - a.sc).slice(0, 3)
-            .map((r) => ({ name: r.x.name, img: card(r.x), why: 'Tông ' + r.e.map((k) => HN[k]).join(' + ') + ' · ' + r.x.price + 'k', pick: pickSet(r.x.id) })); }
+            .map((r) => ({ name: r.x.name, img: card(r.x), why: (EN ? 'Tones: ' + r.e.map((k) => HN_EN[k]).join(' + ') : 'Tông ' + r.e.map((k) => HN[k]).join(' + ')) + ' · ' + r.x.price + 'k', pick: pickSet(r.x.id) })); }
         let z = null;
         if (tab === 1 && st.spDob) { const d = new Date(st.spDob + 'T00:00:00'); const mo = d.getMonth() + 1, da = d.getDate(); const zz = ZOD.find((q) => mo < q[1] || (mo === q[1] && da <= q[2])) || ZOD[0]; const g = ZG[zz[3]];
-          z = { head: 'Cung ' + zz[0] + ' · nhóm ' + g.n, tip: g.tip, pal: g.pal };
-          const ids = st.gender === 'm' ? pool.map((x) => x.id) : g.sets; rec = ids.map((id) => pool.find((x) => x.id === id)).filter(Boolean).slice(0, 3).map((x) => ({ name: x.name, img: card(x), why: 'Hợp nhóm ' + g.n + ' · ' + x.price + 'k', pick: pickSet(x.id) })); }
+          const EN = st.lang === 'en'; const ge = ZG_EN[zz[3]];
+          z = EN ? { head: (ZN_EN[zz[0]] || zz[0]) + ' · ' + ge.n + ' sign', tip: g.tip, pal: ge.pal } : { head: 'Cung ' + zz[0] + ' · nhóm ' + g.n, tip: g.tip, pal: g.pal };
+          const ids = st.gender === 'm' ? pool.map((x) => x.id) : g.sets; rec = ids.map((id) => pool.find((x) => x.id === id)).filter(Boolean).slice(0, 3).map((x) => ({ name: x.name, img: card(x), why: (EN ? 'Suits ' + ge.n + ' signs' : 'Hợp nhóm ' + g.n) + ' · ' + x.price + 'k', pick: pickSet(x.id) })); }
         return { tabs: tabs.map((l, i) => ({ label: l, sel: String(tab === i), style: tab === i ? 'background: #B44D70; color: #FFF4F6; border: 1px solid #B44D70' : 'background: #FFFFFF; color: #3F2633; border: 1px solid #EFC3D0', pick: () => this.setState({ spTab: i }) })),
           t0: tab === 0, t1: tab === 1, t2: tab === 2, t3: tab === 3,
           yearIn: (e) => this.setState({ spYear: Number(e && e.target ? e.target.value : 0) || 0 }), dobIn: (e) => this.setState({ spDob: e && e.target ? e.target.value : '' }),
